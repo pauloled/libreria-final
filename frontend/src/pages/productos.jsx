@@ -5,21 +5,208 @@ import { PRODUCTOS } from '../enpoints/endpoints';
 const Productos = () => {
   const [productos, setProductos] = useState([]);
   const [error, setError] = useState('');
+  const [nuevo, setNuevo] = useState({
+    nombre: '',
+    descripcion: '',
+    precio: '',
+    stock: '',
+    id_categoria: '',
+    id_marca: '',
+    imagen_url: ''
+  });
+  const [editando, setEditando] = useState(null);
+  const [editData, setEditData] = useState({});
+
+  // Cargar productos ordenados por id_producto DESC (más nuevo primero)
+  const cargarProductos = () => {
+    axios.get(PRODUCTOS)
+      .then(res => {
+        const ordenados = res.data.sort((a, b) => b.id_producto - a.id_producto);
+        setProductos(ordenados);
+      })
+      .catch(() => setError('No se pudieron cargar los productos.'));
+  };
 
   useEffect(() => {
-    axios.get(PRODUCTOS)
-      .then(res => setProductos(res.data))
-      .catch(() => setError('No se pudieron cargar los productos.'));
+    cargarProductos();
   }, []);
+
+  // Crear producto
+  const handleCrear = async (e) => {
+    e.preventDefault();
+    setError('');
+    try {
+      await axios.post(PRODUCTOS, {
+        ...nuevo,
+        precio: parseFloat(nuevo.precio),
+        stock: parseInt(nuevo.stock)
+      });
+      setNuevo({
+        nombre: '',
+        descripcion: '',
+        precio: '',
+        stock: '',
+        id_categoria: '',
+        id_marca: '',
+        imagen_url: ''
+      });
+      cargarProductos();
+    } catch {
+      setError('No se pudo crear el producto.');
+    }
+  };
+
+  // Eliminar producto
+  const handleEliminar = async (id) => {
+    if (!window.confirm('¿Seguro que deseas eliminar este producto?')) return;
+    try {
+      await axios.delete(`${PRODUCTOS}/${id}`);
+      cargarProductos();
+    } catch {
+      setError('No se pudo eliminar el producto.');
+    }
+  };
+
+  // Iniciar edición
+  const handleEditar = (producto) => {
+    setEditando(producto.id_producto);
+    setEditData({ ...producto });
+  };
+
+  // Guardar edición
+  const handleGuardarEdicion = async (id) => {
+    try {
+      await axios.put(`${PRODUCTOS}/${id}`, {
+        ...editData,
+        precio: parseFloat(editData.precio),
+        stock: parseInt(editData.stock)
+      });
+      setEditando(null);
+      cargarProductos();
+    } catch {
+      setError('No se pudo actualizar el producto.');
+    }
+  };
+
+  // Cancelar edición
+  const handleCancelarEdicion = () => {
+    setEditando(null);
+    setEditData({});
+  };
 
   return (
     <div>
-      <h2>Página de Productos</h2>
+      <h2>Gestión de Productos</h2>
+      <p>Debug: El componente se está renderizando</p>
       {error && <p style={{color: 'red'}}>{error}</p>}
+
+      <form onSubmit={handleCrear} style={{marginBottom: 20}}>
+        <input
+          type="text"
+          placeholder="Nombre"
+          value={nuevo.nombre}
+          onChange={e => setNuevo({ ...nuevo, nombre: e.target.value })}
+          required
+        />
+        <input
+          type="text"
+          placeholder="Descripción"
+          value={nuevo.descripcion}
+          onChange={e => setNuevo({ ...nuevo, descripcion: e.target.value })}
+        />
+        <input
+          type="number"
+          placeholder="Precio"
+          value={nuevo.precio}
+          onChange={e => setNuevo({ ...nuevo, precio: e.target.value })}
+          required
+        />
+        <input
+          type="number"
+          placeholder="Stock"
+          value={nuevo.stock}
+          onChange={e => setNuevo({ ...nuevo, stock: e.target.value })}
+          required
+        />
+        <input
+          type="text"
+          placeholder="ID Categoría"
+          value={nuevo.id_categoria}
+          onChange={e => setNuevo({ ...nuevo, id_categoria: e.target.value })}
+        />
+        <input
+          type="text"
+          placeholder="ID Marca"
+          value={nuevo.id_marca}
+          onChange={e => setNuevo({ ...nuevo, id_marca: e.target.value })}
+        />
+        <input
+          type="text"
+          placeholder="URL Imagen"
+          value={nuevo.imagen_url}
+          onChange={e => setNuevo({ ...nuevo, imagen_url: e.target.value })}
+        />
+        <button type="submit">Crear producto</button>
+      </form>
+
       <ul>
         {productos.map(prod => (
-          <li key={prod.id_producto || prod.id}>
-            {prod.nombre} - ${prod.precio}
+          <li key={prod.id_producto}>
+            {editando === prod.id_producto ? (
+              <div>
+                <input
+                  type="text"
+                  value={editData.nombre}
+                  onChange={e => setEditData({ ...editData, nombre: e.target.value })}
+                />
+                <input
+                  type="text"
+                  value={editData.descripcion}
+                  onChange={e => setEditData({ ...editData, descripcion: e.target.value })}
+                />
+                <input
+                  type="number"
+                  value={editData.precio}
+                  onChange={e => setEditData({ ...editData, precio: e.target.value })}
+                />
+                <input
+                  type="number"
+                  value={editData.stock}
+                  onChange={e => setEditData({ ...editData, stock: e.target.value })}
+                />
+                <input
+                  type="text"
+                  value={editData.id_categoria}
+                  onChange={e => setEditData({ ...editData, id_categoria: e.target.value })}
+                />
+                <input
+                  type="text"
+                  value={editData.id_marca}
+                  onChange={e => setEditData({ ...editData, id_marca: e.target.value })}
+                />
+                <input
+                  type="text"
+                  value={editData.imagen_url}
+                  onChange={e => setEditData({ ...editData, imagen_url: e.target.value })}
+                />
+                <button onClick={() => handleGuardarEdicion(prod.id_producto)}>Guardar</button>
+                <button onClick={handleCancelarEdicion}>Cancelar</button>
+              </div>
+            ) : (
+              <div>
+                <b>{prod.nombre}</b> - ${prod.precio} - Stock: {prod.stock}
+                <br />
+                {prod.descripcion}
+                <br />
+                Categoría: {prod.id_categoria} | Marca: {prod.id_marca}
+                <br />
+                {prod.imagen_url && <img src={prod.imagen_url} alt={prod.nombre} width={60} />}
+                <br />
+                <button onClick={() => handleEditar(prod)}>Editar</button>
+                <button onClick={() => handleEliminar(prod.id_producto)}>Eliminar</button>
+                <hr />
+              </div>
+            )}
           </li>
         ))}
       </ul>

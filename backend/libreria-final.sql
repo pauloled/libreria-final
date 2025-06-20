@@ -3,6 +3,7 @@ CREATE DATABASE IF NOT EXISTS libreria;
 
 -- Usar la base de datos
 USE libreria;
+
 -- Creación de tabla de categorías
 CREATE TABLE categoria (
     id_categoria INT AUTO_INCREMENT PRIMARY KEY,
@@ -91,10 +92,11 @@ CREATE TABLE detalle_venta (
     FOREIGN KEY (id_producto) REFERENCES producto(id_producto)
 );
 
--- Tabla de métodos de pago (uno por venta)
+-- Tabla de métodos de pago (permite múltiples por venta)
 CREATE TABLE metodo_pago (
     id_pago INT AUTO_INCREMENT PRIMARY KEY,
-    tipo VARCHAR(30) NOT NULL,
     id_venta INT,
+    tipo ENUM('Efectivo', 'Tarjeta', 'Transferencia') NOT NULL,
+    monto DECIMAL(10,2) NOT NULL,
     FOREIGN KEY (id_venta) REFERENCES venta(id_venta)
 );

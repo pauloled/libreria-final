@@ -16,13 +16,30 @@ const Ingresos = () => {
     <div>
       <h2>Página de Ingresos</h2>
       {error && <p style={{color: 'red'}}>{error}</p>}
-      <ul>
-        {ingresos.map(ing => (
-          <li key={ing.id_ingreso || ing.id}>
-            Producto: {ing.id_producto} - Cantidad: {ing.cantidad} - Proveedor: {ing.proveedor} - Total: ${ing.total}
-          </li>
-        ))}
-      </ul>
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Producto</th>
+            <th>Proveedor</th>
+            <th>Cantidad</th>
+            <th>Precio Unitario</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          {ingresos.map(ing => (
+            <tr key={ing.id_ingreso}>
+              <td>{ing.fecha}</td>
+              <td>{ing.producto}</td>
+              <td>{ing.proveedor}</td>
+              <td>{ing.cantidad}</td>
+              <td>${ing.precio_unitario}</td>
+              <td>${ing.subtotal}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
