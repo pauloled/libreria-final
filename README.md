@@ -52,7 +52,7 @@ INSERT INTO usuario (nombre_usuario, correo, contrasena, fecha_registro, rol) VA
 ```
 
 ### 3. Configurar variables de entorno
--  Edita el archivo .env con los datos de tu base de datos:
+-  Crea el archivo ".env" con los datos de tu base de datos:
 ```
 DB_HOST=localhost
 DB_USER=tu_usuario
