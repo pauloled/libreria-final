@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { LOGIN } from '../enpoints/endpoints';
 
 const Login = ({ onLogin }) => {
   const [nombre_usuario, setNombreUsuario] = useState('');
@@ -7,27 +8,27 @@ const Login = ({ onLogin }) => {
   const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setError('');
-  try {
-    const res = await axios.post('http://localhost:3001/api/login', {
-      nombre_usuario,
-      contrasena,
-    });
-    if (res.data && res.data.usuario) {
-      onLogin(res.data.usuario);
-    } else {
-      setError('Usuario o contraseña incorrectos');
+    e.preventDefault();
+    setError('');
+    try {
+      // Cambia los nombres de los campos si tu backend espera username y password
+      const res = await axios.post(LOGIN, {
+        username: nombre_usuario,
+        password: contrasena,
+      });
+      if (res.data && res.data.user) {
+        onLogin(res.data.user);
+      } else {
+        setError('Usuario o contraseña incorrectos');
+      }
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.message) {
+        setError(error.response.data.message);
+      } else {
+        setError('Error de conexión o servidor. Intenta nuevamente.');
+      }
     }
-  } catch (error) {
-    // Puedes mostrar un mensaje genérico o uno más específico si existe respuesta del backend
-    if (error.response && error.response.data && error.response.data.error) {
-      setError(error.response.data.error);
-    } else {
-      setError('Error de conexión o servidor. Intenta nuevamente.');
-    }
-  }
-};
+  };
 
   return (
     <form onSubmit={handleSubmit}>
@@ -52,4 +53,4 @@ const Login = ({ onLogin }) => {
   );
 };
 
-export default Login
+export default Login;

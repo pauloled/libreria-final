@@ -1,29 +1,29 @@
 import React from 'react';
-import LoginForm from './components/login';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Login from './pages/login';
 import useUserStore from './store/userStore';
-import AdminHome from './pages/aminhome';
-import EmpleadoHome from './pages/empleadohome';
-import EncargadoHome from './pages/encargadohome';
+import AppRoutes from './router/router';
 
 function App() {
   const { usuario, setUsuario, logout } = useUserStore();
 
-  if (!usuario) {
-    return <LoginForm onLogin={setUsuario} />;
-  }
-
-  // Navegación según rol
-  if (usuario.rol === 'admin') {
-    return <AdminHome usuario={usuario} logout={logout} />;
-  }
-  if (usuario.rol === 'empleado') {
-    return <EmpleadoHome usuario={usuario} logout={logout} />;
-  }
-  if (usuario.rol === 'encargado') {
-    return <EncargadoHome usuario={usuario} logout={logout} />;
-  }
-
-  return <div>Rol no reconocido</div>;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            usuario ? (
+              <AppRoutes usuario={usuario} logout={logout} />
+            ) : (
+              <Login onLogin={setUsuario} />
+            )
+          }
+        />
+        {/* Puedes agregar rutas públicas aquí si lo necesitas */}
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;

@@ -1,7 +1,7 @@
 // router/authroutes.js
 const express = require('express');
 const router = express.Router();
-const db = require('../database');
+const db = require('../configDB/database');
 
 // Login
 router.post('/login', (req, res) => {
