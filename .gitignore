@@ -1,0 +1,8 @@
+# Ignorar carpetas pesadas del backend y frontend
+frontend/node_modules/
+backend/node_modules/
+
+# Ignorar otros archivos generados
+frontend/dist/
+backend/dist/
+*.env
