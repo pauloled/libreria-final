@@ -1,22 +1,45 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../Styles/adminhome.css';
+import {
+  FaBook, FaClipboardList, FaUserCheck, FaSignOutAlt, FaFileAlt, FaSignInAlt
+} from 'react-icons/fa';
+import useUserStore from '../store/userStore';
 
-const EmpleadoHome = ({ usuario, logout }) => {
+const empleadoItems = [
+  { icon: <FaBook />, label: 'Productos', path: '/productos' },
+  { icon: <FaClipboardList />, label: 'Mis Ventas', path: '/ventas' },
+  { icon: <FaUserCheck />, label: 'Mi Asistencia', path: '/asistencias' },
+  { icon: <FaFileAlt />, label: 'Registrar Ingreso', action: () => alert('Registrar Ingreso') },
+  { icon: <FaSignInAlt />, label: 'Registrar Salida', action: () => alert('Registrar Salida') },
+];
+
+const EmpleadoHome = () => {
   const navigate = useNavigate();
+  const usuario = useUserStore(state => state.usuario);
+  const logout = useUserStore(state => state.logout);
+
+  if (!usuario) return null;
 
   return (
-    <div>
-      <h2>Bienvenido/a, {usuario.nombre_usuario} (Empleado)</h2>
-      <div style={{ margin: '20px 0' }}>
-        <button onClick={() => navigate('/productos')}>Productos</button>
-        <button onClick={() => navigate('/ventas')}>Mis Ventas</button>
-        <button onClick={() => navigate('/asistencias')}>Mi Asistencia</button>
+    <div className="admin-panel-fullscreen">
+      <h2 className="admin-title">Bienvenido/a, {usuario.nombre_usuario} (Empleado)</h2>
+      <div className="card-grid">
+        {empleadoItems.map((item, i) => (
+          <div
+            key={i}
+            className="card"
+            onClick={() => item.path ? navigate(item.path) : item.action()}
+          >
+            <div className="icon">{item.icon}</div>
+            <div className="label">{item.label}</div>
+          </div>
+        ))}
+        <div className="card" onClick={logout}>
+          <div className="icon"><FaSignOutAlt /></div>
+          <div className="label">Cerrar sesión</div>
+        </div>
       </div>
-      <div style={{ margin: '20px 0' }}>
-        <button onClick={() => alert('Registrar Ingreso')}>Ingreso</button>
-        <button onClick={() => alert('Registrar Salida')}>Salida</button>
-      </div>
-      <button onClick={logout}>Cerrar sesión</button>
     </div>
   );
 };
