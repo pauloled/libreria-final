@@ -58,8 +58,8 @@ DB_HOST=localhost
 DB_USER=tu_usuario
 DB_PASSWORD=tu_contraseña
 DB_NAME=libreria
-```
 -- Si se usa XAMPP para ingresar la contraseña suele estar vacía.
+```
    
 ### 4. Instalar dependencias
 **Backend:**
