@@ -1,3 +1,44 @@
+.admin-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  background: #3d246c;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+  padding: 0 0 0 0;
+  display: flex;
+  justify-content: center;
+}
+
+.admin-navbar ul {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.admin-navbar li {
+  display: flex;
+  align-items: center;
+  padding: 18px 32px;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.admin-navbar li:hover {
+  background: #5f3dc4;
+  color: #ffeaa7;
+}
+
+.admin-navbar .nav-icon {
+  margin-right: 10px;
+  font-size: 1.3rem;
+}
+
 .admin-panel-fullscreen {
   height: 100vh;
   width: 100vw;
@@ -24,7 +65,7 @@
   justify-items: center;
   width: 100%;
   max-width: 900px; /* para centrar el contenido y limitar el ancho */
-  margin-top: 20px;
+  margin-top: 100px;
 }
 
 .card {
@@ -52,4 +93,14 @@
 .card .label {
   font-weight: bold;
   font-size: 16px;
+}
+
+.admin-panel-fullscreen {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #3d246c 0%, #5f3dc4 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 80px 0 0 0;
 }
