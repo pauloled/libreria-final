@@ -40,12 +40,16 @@ const Asistencias = () => {
   });
   const [editando, setEditando] = useState(null);
   const [editData, setEditData] = useState({});
-
   const usuario = useUserStore(state => state.usuario);
 
   useEffect(() => {
     cargarAsistencias();
     axios.get(USUARIOS).then(res => setUsuarios(res.data));
+    // Si es empleado, filtra por su usuario
+    if (usuario?.rol === 'empleado') {
+      setFiltros(f => ({ ...f, usuario: usuario.id_usuario }));
+    }
+    // eslint-disable-next-line
   }, []);
 
   const cargarAsistencias = () => {
@@ -65,7 +69,11 @@ const Asistencias = () => {
 
   // Limpiar filtros
   const limpiarFiltros = () => {
-    setFiltros({ fecha: '', usuario: '' });
+    if (usuario?.rol === 'empleado') {
+      setFiltros({ fecha: '', usuario: usuario.id_usuario });
+    } else {
+      setFiltros({ fecha: '', usuario: '' });
+    }
   };
 
   useEffect(() => {
@@ -162,6 +170,11 @@ const Asistencias = () => {
     }
   };
 
+  // Solo mostrar asistencias propias si es empleado
+  const asistenciasFiltradas = usuario?.rol === 'empleado'
+    ? asistencias.filter(a => a.id_usuario === usuario.id_usuario)
+    : asistencias;
+
   return (
     <div>
       <h2>Gestión de Asistencias</h2>
@@ -170,12 +183,15 @@ const Asistencias = () => {
       {/* Filtros */}
       <div style={{ marginBottom: 16 }}>
         <input type="date" name="fecha" value={filtros.fecha} onChange={handleFiltro} />
-        <select name="usuario" value={filtros.usuario} onChange={handleFiltro}>
-          <option value="">Todos los usuarios</option>
-          {usuarios.map(u => (
-            <option key={u.id_usuario} value={u.id_usuario}>{u.nombre_usuario}</option>
-          ))}
-        </select>
+        {/* Solo admins/encargados pueden filtrar por usuario */}
+        {usuario?.rol !== 'empleado' && (
+          <select name="usuario" value={filtros.usuario} onChange={handleFiltro}>
+            <option value="">Todos los usuarios</option>
+            {usuarios.map(u => (
+              <option key={u.id_usuario} value={u.id_usuario}>{u.nombre_usuario}</option>
+            ))}
+          </select>
+        )}
         <button onClick={limpiarFiltros} style={{ marginLeft: 8 }}>Limpiar filtros</button>
       </div>
 
@@ -195,23 +211,25 @@ const Asistencias = () => {
         </div>
       )}
 
-      {/* Formulario para crear asistencia */}
-      <form onSubmit={handleCrear} style={{ marginBottom: 20, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-        <select value={nuevo.id_usuario} onChange={e => setNuevo({ ...nuevo, id_usuario: e.target.value })} required>
-          <option value="">Usuario</option>
-          {usuarios.map(u => (
-            <option key={u.id_usuario} value={u.id_usuario}>{u.nombre_usuario}</option>
-          ))}
-        </select>
-        <input type="date" value={nuevo.fecha} onChange={e => setNuevo({ ...nuevo, fecha: e.target.value })} required />
-        <input type="time" value={nuevo.hora_entrada} onChange={e => setNuevo({ ...nuevo, hora_entrada: e.target.value })} required />
-        <input type="time" value={nuevo.hora_salida} onChange={e => setNuevo({ ...nuevo, hora_salida: e.target.value })} required />
-        <select value={nuevo.corregida} onChange={e => setNuevo({ ...nuevo, corregida: e.target.value })}>
-          <option value="NO">No corregida</option>
-          <option value="SI">Corregida</option>
-        </select>
-        <button type="submit">Registrar asistencia</button>
-      </form>
+      {/* Solo admins/encargados pueden crear asistencias para otros */}
+      {usuario?.rol !== 'empleado' && (
+        <form onSubmit={handleCrear} style={{ marginBottom: 20, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          <select value={nuevo.id_usuario} onChange={e => setNuevo({ ...nuevo, id_usuario: e.target.value })} required>
+            <option value="">Usuario</option>
+            {usuarios.map(u => (
+              <option key={u.id_usuario} value={u.id_usuario}>{u.nombre_usuario}</option>
+            ))}
+          </select>
+          <input type="date" value={nuevo.fecha} onChange={e => setNuevo({ ...nuevo, fecha: e.target.value })} required />
+          <input type="time" value={nuevo.hora_entrada} onChange={e => setNuevo({ ...nuevo, hora_entrada: e.target.value })} required />
+          <input type="time" value={nuevo.hora_salida} onChange={e => setNuevo({ ...nuevo, hora_salida: e.target.value })} required />
+          <select value={nuevo.corregida} onChange={e => setNuevo({ ...nuevo, corregida: e.target.value })}>
+            <option value="NO">No corregida</option>
+            <option value="SI">Corregida</option>
+          </select>
+          <button type="submit">Registrar asistencia</button>
+        </form>
+      )}
 
       {/* Tabla de asistencias */}
       <table border="1" cellPadding={8} style={{ width: '100%', background: 'white', color: 'black' }}>
@@ -223,11 +241,12 @@ const Asistencias = () => {
             <th>Hora Entrada</th>
             <th>Hora Salida</th>
             <th>Corregida</th>
-            <th>Acciones</th>
+            {/* Solo admins/encargados pueden editar/eliminar */}
+            {usuario?.rol !== 'empleado' && <th>Acciones</th>}
           </tr>
         </thead>
         <tbody>
-          {[...asistencias]
+          {[...asistenciasFiltradas]
             .sort(compararAsistencias)
             .filter(asist =>
               !(usuario && asist.id_usuario === usuario.id_usuario && asist.fecha === hoy && !asist.hora_salida)
@@ -235,29 +254,31 @@ const Asistencias = () => {
             .map(asist => (
             <tr key={asist.id_asistencia}>
               {editando === asist.id_asistencia ? (
-                <>
-                  <td>{asist.id_asistencia}</td>
-                  <td>
-                    <select value={editData.id_usuario} onChange={e => setEditData({ ...editData, id_usuario: e.target.value })}>
-                      {usuarios.map(u => (
-                        <option key={u.id_usuario} value={u.id_usuario}>{u.nombre_usuario}</option>
-                      ))}
-                    </select>
-                  </td>
-                  <td><input type="date" value={editData.fecha} onChange={e => setEditData({ ...editData, fecha: e.target.value })} /></td>
-                  <td><input type="time" value={editData.hora_entrada} onChange={e => setEditData({ ...editData, hora_entrada: e.target.value })} /></td>
-                  <td><input type="time" value={editData.hora_salida} onChange={e => setEditData({ ...editData, hora_salida: e.target.value })} /></td>
-                  <td>
-                    <select value={editData.corregida} onChange={e => setEditData({ ...editData, corregida: e.target.value })}>
-                      <option value="NO">No corregida</option>
-                      <option value="SI">Corregida</option>
-                    </select>
-                  </td>
-                  <td>
-                    <button onClick={() => handleGuardarEdicion(asist.id_asistencia)}>Guardar</button>
-                    <button onClick={handleCancelarEdicion}>Cancelar</button>
-                  </td>
-                </>
+                usuario?.rol !== 'empleado' && (
+                  <>
+                    <td>{asist.id_asistencia}</td>
+                    <td>
+                      <select value={editData.id_usuario} onChange={e => setEditData({ ...editData, id_usuario: e.target.value })}>
+                        {usuarios.map(u => (
+                          <option key={u.id_usuario} value={u.id_usuario}>{u.nombre_usuario}</option>
+                        ))}
+                      </select>
+                    </td>
+                    <td><input type="date" value={editData.fecha} onChange={e => setEditData({ ...editData, fecha: e.target.value })} /></td>
+                    <td><input type="time" value={editData.hora_entrada} onChange={e => setEditData({ ...editData, hora_entrada: e.target.value })} /></td>
+                    <td><input type="time" value={editData.hora_salida} onChange={e => setEditData({ ...editData, hora_salida: e.target.value })} /></td>
+                    <td>
+                      <select value={editData.corregida} onChange={e => setEditData({ ...editData, corregida: e.target.value })}>
+                        <option value="NO">No corregida</option>
+                        <option value="SI">Corregida</option>
+                      </select>
+                    </td>
+                    <td>
+                      <button onClick={() => handleGuardarEdicion(asist.id_asistencia)}>Guardar</button>
+                      <button onClick={handleCancelarEdicion}>Cancelar</button>
+                    </td>
+                  </>
+                )
               ) : (
                 <>
                   <td>{asist.id_asistencia}</td>
@@ -266,10 +287,12 @@ const Asistencias = () => {
                   <td>{formatearHora(asist.hora_entrada)}</td>
                   <td>{formatearHora(asist.hora_salida)}</td>
                   <td>{asist.corregida === 'SI' ? 'SI' : ''}</td>
-                  <td>
-                    <button onClick={() => handleEditar(asist)}>Editar</button>
-                    <button onClick={() => handleEliminar(asist.id_asistencia)}>Eliminar</button>
-                  </td>
+                  {usuario?.rol !== 'empleado' && (
+                    <td>
+                      <button onClick={() => handleEditar(asist)}>Editar</button>
+                      <button onClick={() => handleEliminar(asist.id_asistencia)}>Eliminar</button>
+                    </td>
+                  )}
                 </>
               )}
             </tr>

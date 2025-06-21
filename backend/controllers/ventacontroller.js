@@ -1,22 +1,24 @@
 const db = require('../configDB/database');
 
-// Listar ventas con detalles y usuario
+// Listar ventas con detalles, usuario y métodos de pago
 exports.getAllVentas = (req, res) => {
     const { fecha, usuario } = req.query;
     let sql = `
-        SELECT v.id_venta, v.fecha, v.total, u.nombre_usuario, 
+        SELECT v.id_venta, v.fecha, v.total, u.nombre_usuario, v.id_usuario,
             GROUP_CONCAT(CONCAT(p.nombre, ' (x', dv.cantidad, ')') SEPARATOR ', ') AS articulos,
             GROUP_CONCAT(dv.cantidad) AS cantidades,
-            GROUP_CONCAT(dv.subtotal) AS subtotales
+            GROUP_CONCAT(dv.subtotal) AS subtotales,
+            GROUP_CONCAT(CONCAT(mp.tipo, ': $', mp.monto) SEPARATOR ', ') AS metodos_pago
         FROM venta v
         LEFT JOIN usuario u ON v.id_usuario = u.id_usuario
         LEFT JOIN detalle_venta dv ON v.id_venta = dv.id_venta
         LEFT JOIN producto p ON dv.id_producto = p.id_producto
+        LEFT JOIN metodo_pago mp ON v.id_venta = mp.id_venta
     `;
     let params = [];
     let where = [];
     if (fecha) {
-        where.push('v.fecha=?');
+        where.push('DATE(v.fecha)=?');
         params.push(fecha);
     }
     if (usuario) {
@@ -33,9 +35,9 @@ exports.getAllVentas = (req, res) => {
     });
 };
 
-// Crear venta (simplificado, deberías agregar validaciones y manejo de stock)
+// Crear venta con métodos de pago
 exports.createVenta = (req, res) => {
-    const { fecha, total, id_usuario, detalles } = req.body;
+    const { fecha, total, id_usuario, detalles, metodos_pago } = req.body;
     db.query(
         'INSERT INTO venta (fecha, total, id_usuario) VALUES (?, ?, ?)',
         [fecha, total, id_usuario],
@@ -51,22 +53,40 @@ exports.createVenta = (req, res) => {
                 [detalleValues],
                 (err2) => {
                     if (err2) return res.status(500).json({ error: err2 });
-                    // Descontar stock de cada producto
-                    let queries = detalles.map(d =>
-                        new Promise((resolve, reject) => {
-                            db.query(
-                                'UPDATE producto SET stock = stock - ? WHERE id_producto = ?',
-                                [d.cantidad, d.id_producto],
-                                (err3) => {
-                                    if (err3) reject(err3);
-                                    else resolve();
-                                }
-                            );
-                        })
-                    );
-                    Promise.all(queries)
-                        .then(() => res.json({ message: 'Venta creada y stock descontado' }))
-                        .catch(error => res.status(500).json({ error }));
+                    // Insertar métodos de pago
+                    if (Array.isArray(metodos_pago) && metodos_pago.length > 0) {
+                        const mpValues = metodos_pago.map(mp =>
+                            [id_venta, mp.tipo, mp.monto]
+                        );
+                        db.query(
+                            'INSERT INTO metodo_pago (id_venta, tipo, monto) VALUES ?',
+                            [mpValues],
+                            (err3) => {
+                                if (err3) return res.status(500).json({ error: err3 });
+                                descontarStock();
+                            }
+                        );
+                    } else {
+                        descontarStock();
+                    }
+                    // Descontar stock
+                    function descontarStock() {
+                        let queries = detalles.map(d =>
+                            new Promise((resolve, reject) => {
+                                db.query(
+                                    'UPDATE producto SET stock = stock - ? WHERE id_producto = ?',
+                                    [d.cantidad, d.id_producto],
+                                    (err4) => {
+                                        if (err4) reject(err4);
+                                        else resolve();
+                                    }
+                                );
+                            })
+                        );
+                        Promise.all(queries)
+                            .then(() => res.json({ message: 'Venta creada y stock descontado' }))
+                            .catch(error => res.status(500).json({ error }));
+                    }
                 }
             );
         }
