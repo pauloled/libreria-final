@@ -32,6 +32,7 @@ const Ventas = () => {
   const [detalle, setDetalle] = useState({ id_producto: '', cantidad: 1 });
   const [filtroProducto, setFiltroProducto] = useState('');
   const [metodosPago, setMetodosPago] = useState([{ tipo: '', monto: '' }]);
+  const [filtroMetodoPago, setFiltroMetodoPago] = useState(''); // Nuevo estado para filtro
   const usuario = useUserStore(state => state.usuario);
 
   useEffect(() => {
@@ -61,6 +62,7 @@ const Ventas = () => {
   };
 
   const limpiarFiltros = () => {
+    setFiltroMetodoPago('');
     if (usuario?.rol === 'empleado') {
       setFiltros({ fecha: '', usuario: usuario.id_usuario });
     } else {
@@ -164,9 +166,16 @@ const Ventas = () => {
     return prod ? prod.stock : 0;
   })();
 
-  const ventasFiltradas = usuario?.rol === 'empleado'
-    ? ventas.filter(v => v.id_usuario === usuario.id_usuario)
-    : ventas;
+  // Filtrado por usuario y método de pago
+  const ventasFiltradas = (
+    (usuario?.rol === 'empleado'
+      ? ventas.filter(v => v.id_usuario === usuario.id_usuario)
+      : ventas
+    ).filter(v =>
+      !filtroMetodoPago ||
+      (v.metodos_pago && v.metodos_pago.toLowerCase().includes(filtroMetodoPago.toLowerCase()))
+    )
+  );
 
   return (
     <div>
@@ -184,6 +193,13 @@ const Ventas = () => {
             ))}
           </select>
         )}
+        {/* Filtro por método de pago */}
+        <select value={filtroMetodoPago} onChange={e => setFiltroMetodoPago(e.target.value)}>
+          <option value="">Todos los métodos</option>
+          {tiposPago.map(tp => (
+            <option key={tp} value={tp}>{tp}</option>
+          ))}
+        </select>
         <button onClick={limpiarFiltros}>Limpiar filtros</button>
       </div>
 
@@ -336,6 +352,6 @@ const Ventas = () => {
       </table>
     </div>
   );
-};
+ };
 
-export default Ventas;
+ export default Ventas; 
