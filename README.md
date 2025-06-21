@@ -1,8 +1,6 @@
 # Librería " " - Sistema de Gestión Interna
 ## Objetivo del Proyecto
-
-Este sistema web fue desarrollado como proyecto académico para gestionar las operaciones internas de una librería. Permite controlar productos, ventas, usuarios, asistencias e ingresos de stock, diferenciando accesos y funcionalidades según el rol del usuario (admin, encargado, empleado).
-
+Este sistema web fue desarrollado para gestionar las operaciones internas de una librería. Permite controlar productos, ventas, usuarios, asistencias e ingresos de stock, diferenciando accesos y funcionalidades según el rol del usuario (admin, encargado, empleado).
 El objetivo es brindar una solución digital simple, clara y adaptable para la administración diaria de una librería, facilitando la gestión y el registro de actividades clave.
 
 ---
@@ -32,6 +30,15 @@ El objetivo es brindar una solución digital simple, clara y adaptable para la a
 
 ---
 
+##  Requisistos del sistema
+Las aplicaciones necesarias para ejecutar correctamente la aplicación son:
+-  **Visual Studio Code:** o otro editor de código, necesario para ejecutar el código.
+-  **MySQL:** necesario para almacenar y gestionar los datos del sistema en la base de datos.
+-  **XAMPP:** opcional, pero práctico.
+-  **Navegador web:** se recomienda usar chrome, firefox o edge, necesario para abrir la pagina que ejecuta el sistema de gestión.
+
+---
+
 ##  Instalación y uso
 
 ### 1. Clonar el repositorio
@@ -42,10 +49,10 @@ cd libreria-final
 
 ### 2. Configurar la base de datos
 -  Importa el archivo libreria-final.sql en tu servidor MySQL para crear la base de datos y las tablas necesarias.
--  Importa el archivo inserts.sql en tu servidoe MySQL para introducir datos en las tablas.
+-  Importa el archivo inserts.sql en tu servidor MySQL para introducir datos en las tablas.
 
 ### 3. Configurar variables de entorno
--  Crea el archivo ".env" con los datos de tu base de datos:
+-  Editar el archivo ".env" con los datos de tu base de datos:
 ```
 DB_HOST=localhost
 DB_USER=tu_usuario
@@ -91,7 +98,6 @@ npm run dev
 
 ##  Funcionalidades del sistema
 
-
 | Módulo         | Funciones disponibles                                                                |
 |----------------|--------------------------------------------------------------------------------------|
 | **Login**      | Acceso seguro y distinción de roles (admin, encargado, empleado)                     |
@@ -105,7 +111,6 @@ npm run dev
 ---
 
 ## Estructura de carpetas
-
 ```
 backend/
   ├── configDB/
@@ -129,7 +134,6 @@ frontend/
 ---
 
 ## Notas
-
 - Este proyecto es una base académica y puede ser ampliado con más validaciones, seguridad y funcionalidades.
 - Si tiene dudas sobre la estructura o el uso, revisa los archivos README y los comentarios en el código.
 
