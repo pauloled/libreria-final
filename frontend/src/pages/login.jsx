@@ -35,8 +35,9 @@ const Login = ({ onLogin }) => {
     <div className="login-container">
       <div className="login-box">
         <div className="login-left">
-          <h1>Bienvenido!</h1>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+          <h1>Bienvenido a Libreria Escolarium!</h1>
+          <h3>Este espacio está diseñado para facilitar tu trabajo y mejorar la organización interna.
+          </h3>
           
         </div>
         <div className="login-right">
