@@ -42,14 +42,7 @@ cd libreria-final
 
 ### 2. Configurar la base de datos
 -  Importa el archivo libreria-final.sql en tu servidor MySQL para crear la base de datos y las tablas necesarias.
--  Crea usuarios de prueba en la tabla usuario (admin, encargado, empleado):
-```bash
--- Usuarios de prueba para la tabla `usuario`
-INSERT INTO usuario (nombre_usuario, correo, contrasena, fecha_registro, rol) VALUES
-('admin', 'admin@libreria.com', '123', NOW(), 'admin'),
-('empleado1', 'empleado1@libreria.com', '123', NOW(), 'empleado'),
-('encargado1', 'encargado1@libreria.com', '123', NOW(), 'encargado');
-```
+-  Importar el archivo inserts.sql en tu servidoe MySQL para introducir datos en las tablas.
 
 ### 3. Configurar variables de entorno
 -  Crea el archivo ".env" con los datos de tu base de datos:
