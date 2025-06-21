@@ -42,7 +42,7 @@ cd libreria-final
 
 ### 2. Configurar la base de datos
 -  Importa el archivo libreria-final.sql en tu servidor MySQL para crear la base de datos y las tablas necesarias.
--  Importar el archivo inserts.sql en tu servidoe MySQL para introducir datos en las tablas.
+-  Importa el archivo inserts.sql en tu servidoe MySQL para introducir datos en las tablas.
 
 ### 3. Configurar variables de entorno
 -  Crea el archivo ".env" con los datos de tu base de datos:
