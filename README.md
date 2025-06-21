@@ -34,7 +34,7 @@ El objetivo es brindar una solución digital simple, clara y adaptable para la a
 Las aplicaciones necesarias para ejecutar correctamente la aplicación son:
 -  **Visual Studio Code:** o otro editor de código, necesario para ejecutar el código.
 -  **MySQL:** necesario para almacenar y gestionar los datos del sistema en la base de datos.
--  **XAMPP:** opcional, pero práctico.
+-  **XAMPP:** opcional, dependiendo de la instalación de tu MySQL.
 -  **Navegador web:** se recomienda usar chrome, firefox o edge, necesario para abrir la pagina que ejecuta el sistema de gestión.
 
 ---
