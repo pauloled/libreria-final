@@ -1,4 +1,4 @@
-# Librería " " - Sistema de Gestión Interna
+# Librería Escolarium - Sistema de Gestión Interna
 ## Objetivo del Proyecto
 Este sistema web fue desarrollado para gestionar las operaciones internas de una librería. Permite controlar productos, ventas, usuarios, asistencias e ingresos de stock, diferenciando accesos y funcionalidades según el rol del usuario (admin, encargado, empleado).
 El objetivo es brindar una solución digital simple, clara y adaptable para la administración diaria de una librería, facilitando la gestión y el registro de actividades clave.
@@ -134,8 +134,8 @@ frontend/
 ---
 
 ## Notas
-- Este proyecto es una base académica y puede ser ampliado con más validaciones, seguridad y funcionalidades.
-- Si tiene dudas sobre la estructura o el uso, revisa los archivos README y los comentarios en el código.
+- Este proyecto puede ser ampliado con más validaciones, seguridad y funcionalidades.
+- Si tiene dudas sobre la estructura o el uso, revisar los comentarios en el código.
 
 ---
 
