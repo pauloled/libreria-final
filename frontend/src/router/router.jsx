@@ -10,6 +10,7 @@ import Asistencias from '../pages/asistencias';
 import Ingresos from '../pages/ingresos';
 import Proveedores from '../pages/proveedores';
 import EmpleadoLayout from '../pages/EmpleadoLayout';
+import EncargadoLayout from '../pages/EncargadoLayout';
 
 const AppRoutes = ({ usuario, logout }) => {
   if (!usuario) return <Navigate to="/" />;
@@ -44,13 +45,15 @@ const AppRoutes = ({ usuario, logout }) => {
   if (usuario.rol === 'encargado') {
     return (
       <Routes>
-        <Route path="/" element={<EncargadoHome usuario={usuario} logout={logout} />} />
-        <Route path="/productos" element={<Productos />} />
-        <Route path="/ventas" element={<Ventas />} />
-        <Route path="/asistencias" element={<Asistencias />} />
-        <Route path="/ingresos" element={<Ingresos />} />
-        <Route path="/proveedores" element={<Proveedores />} />
-        <Route path="*" element={<Navigate to="/" />} />
+        <Route path="/" element={<EncargadoLayout />}>
+          <Route index element={<EncargadoHome />} />
+          <Route path="productos" element={<Productos />} />
+          <Route path="ventas" element={<Ventas />} />
+          <Route path="asistencias" element={<Asistencias />} />
+          <Route path="ingresos" element={<Ingresos />} />
+          <Route path="proveedores" element={<Proveedores />} />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Route>
       </Routes>
     );
   }
