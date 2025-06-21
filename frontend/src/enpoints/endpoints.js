@@ -17,3 +17,9 @@ export const ASISTENCIAS = `${API_BASE}/asistencias`;
 
 // Ingresos
 export const INGRESOS = `${API_BASE}/ingresos`;
+
+// Categorías
+export const CATEGORIAS = `${API_BASE}/productos/categorias`;
+
+// Marcas
+export const MARCAS = `${API_BASE}/productos/marcas`;
