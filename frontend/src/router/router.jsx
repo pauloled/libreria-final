@@ -9,6 +9,7 @@ import Usuarios from '../pages/usuarios';
 import Asistencias from '../pages/asistencias';
 import Ingresos from '../pages/ingresos';
 import Proveedores from '../pages/proveedores';
+import EmpleadoLayout from '../pages/EmpleadoLayout';
 
 const AppRoutes = ({ usuario, logout }) => {
   if (!usuario) return <Navigate to="/" />;
@@ -30,11 +31,13 @@ const AppRoutes = ({ usuario, logout }) => {
   if (usuario.rol === 'empleado') {
     return (
       <Routes>
-        <Route path="/" element={<EmpleadoHome usuario={usuario} logout={logout} />} />
-        <Route path="/productos" element={<Productos />} />
-        <Route path="/ventas" element={<Ventas />} />
-        <Route path="/asistencias" element={<Asistencias />} />
-        <Route path="*" element={<Navigate to="/" />} />
+        <Route path="/" element={<EmpleadoLayout />}>
+          <Route index element={<EmpleadoHome />} />
+          <Route path="productos" element={<Productos />} />
+          <Route path="ventas" element={<Ventas />} />
+          <Route path="asistencias" element={<Asistencias />} />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Route>
       </Routes>
     );
   }
