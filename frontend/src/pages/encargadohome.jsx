@@ -12,10 +12,7 @@ const EncargadoHome = ({ usuario, logout }) => {
         <button onClick={() => navigate('/ventas')}>Ventas</button>
         <button onClick={() => navigate('/asistencias')}>Asistencias</button>
         <button onClick={() => navigate('/ingresos')}>Ingresos</button>
-      </div>
-      <div style={{ margin: '20px 0' }}>
-        <button onClick={() => alert('Registrar Ingreso')}>Ingreso</button>
-        <button onClick={() => alert('Registrar Salida')}>Salida</button>
+        <button onClick={() => navigate('/proveedores')}>Proveedores</button>
       </div>
       <button onClick={logout}>Cerrar sesión</button>
     </div>

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../Styles/adminhome.css';
 import {
-  FaUserCheck, FaUsers, FaBook, FaClipboardList, FaFileAlt, FaSignOutAlt
+  FaUserCheck, FaUsers, FaBook, FaClipboardList, FaFileAlt, FaTruck, FaSignOutAlt
 } from 'react-icons/fa';
 import useUserStore from '../store/userStore';
 
@@ -12,6 +12,7 @@ const navItems = [
   { icon: <FaBook />, label: 'Productos', path: '/productos' },
   { icon: <FaClipboardList />, label: 'Ventas', path: '/ventas' },
   { icon: <FaFileAlt />, label: 'Ingresos', path: '/ingresos' },
+  { icon: <FaTruck />, label: 'Proveedores', path: '/proveedores' },
 ];
 
 const AdminHome = () => {
@@ -59,7 +60,7 @@ const AdminHome = () => {
           <div
             key={i}
             className="card"
-            onClick={() => navigate(card.path)}
+            onClick={() => handleNav(card)}
           >
             <div className="icon">{card.icon}</div>
             <div className="label">{card.label}</div>

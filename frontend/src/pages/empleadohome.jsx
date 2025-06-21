@@ -2,16 +2,14 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../Styles/adminhome.css';
 import {
-  FaBook, FaClipboardList, FaUserCheck, FaSignOutAlt, FaFileAlt, FaSignInAlt
+  FaBook, FaClipboardList, FaUserCheck, FaSignOutAlt
 } from 'react-icons/fa';
 import useUserStore from '../store/userStore';
 
 const empleadoItems = [
   { icon: <FaBook />, label: 'Productos', path: '/productos' },
   { icon: <FaClipboardList />, label: 'Mis Ventas', path: '/ventas' },
-  { icon: <FaUserCheck />, label: 'Mi Asistencia', path: '/asistencias' },
-  { icon: <FaFileAlt />, label: 'Registrar Ingreso', action: () => alert('Registrar Ingreso') },
-  { icon: <FaSignInAlt />, label: 'Registrar Salida', action: () => alert('Registrar Salida') },
+  { icon: <FaUserCheck />, label: 'Mi Asistencia', path: '/asistencias' }
 ];
 
 const EmpleadoHome = () => {
@@ -29,7 +27,7 @@ const EmpleadoHome = () => {
           <div
             key={i}
             className="card"
-            onClick={() => item.path ? navigate(item.path) : item.action()}
+            onClick={() => navigate(item.path)}
           >
             <div className="icon">{item.icon}</div>
             <div className="label">{item.label}</div>

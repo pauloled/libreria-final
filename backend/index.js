@@ -6,7 +6,7 @@ const authRoutes = require('./router/authroutes');
 const ventaRoutes = require('./router/ventaroutes');
 const asistenciaRoutes = require('./router/asistenciaroutes');
 const ingresoRoutes = require('./router/ingresoroutes');
-
+const proveedorRoutes = require('./router/proveedorroutes');
 
 const app = express();
 app.use(cors());
@@ -18,6 +18,7 @@ app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/ventas', ventaRoutes);
 app.use('/api/asistencias', asistenciaRoutes);
 app.use('/api/ingresos', ingresoRoutes);
+app.use('/api/proveedores', proveedorRoutes);
 app.use('/api/auth', authRoutes); // Ruta para login
 
 app.listen(3001, () => {

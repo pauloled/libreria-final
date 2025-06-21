@@ -1,3 +1,4 @@
+USE libreria;
 -- Insertar usuarios
 INSERT INTO usuario (nombre_usuario, correo, contrasena, fecha_registro, rol) VALUES
 ('admin', 'admin@libreria.com', '123', NOW(), 'admin'),

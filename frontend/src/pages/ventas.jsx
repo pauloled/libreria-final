@@ -2,6 +2,18 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { VENTAS, PRODUCTOS, USUARIOS } from '../enpoints/endpoints';
 
+// Función para formatear la fecha
+function formatearFecha(fechaStr) {
+  if (!fechaStr) return '';
+  const fecha = new Date(fechaStr);
+  const dia = String(fecha.getDate()).padStart(2, '0');
+  const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+  const anio = fecha.getFullYear();
+  const horas = String(fecha.getHours()).padStart(2, '0');
+  const minutos = String(fecha.getMinutes()).padStart(2, '0');
+  return `${dia}/${mes}/${anio} ${horas}:${minutos}`;
+}
+
 const Ventas = () => {
   const [ventas, setVentas] = useState([]);
   const [productos, setProductos] = useState([]);
@@ -86,8 +98,11 @@ const Ventas = () => {
       return;
     }
     try {
+      // Si el input es datetime-local, el valor es "YYYY-MM-DDTHH:mm"
+      // MySQL espera "YYYY-MM-DD HH:mm:ss", así que reemplazamos la T por un espacio
+      const fechaFormateada = nuevo.fecha.replace('T', ' ') + ':00';
       await axios.post(VENTAS, {
-        fecha: nuevo.fecha,
+        fecha: fechaFormateada,
         id_usuario: nuevo.id_usuario,
         total: nuevo.total,
         detalles: nuevo.detalles
@@ -110,6 +125,12 @@ const Ventas = () => {
     }
   };
 
+  // Obtener stock del producto seleccionado
+  const stockSeleccionado = (() => {
+    const prod = productos.find(p => p.id_producto === parseInt(detalle.id_producto));
+    return prod ? prod.stock : 0;
+  })();
+
   return (
     <div>
       <h2>Gestión de Ventas</h2>
@@ -129,23 +150,61 @@ const Ventas = () => {
 
       {/* Formulario para crear venta */}
       <form onSubmit={handleCrear} style={{ marginBottom: 20, border: '1px solid #ccc', padding: 12 }}>
-        <input type="date" value={nuevo.fecha} onChange={e => setNuevo({ ...nuevo, fecha: e.target.value })} required />
+        <input
+          type="datetime-local"
+          value={nuevo.fecha}
+          onChange={e => setNuevo({ ...nuevo, fecha: e.target.value })}
+          required
+        />
         <select value={nuevo.id_usuario} onChange={e => setNuevo({ ...nuevo, id_usuario: e.target.value })} required>
           <option value="">Usuario</option>
           {usuarios.map(u => (
             <option key={u.id_usuario} value={u.id_usuario}>{u.nombre_usuario}</option>
           ))}
         </select>
-        {/* Detalle de productos */}
+                {/* Detalle de productos */}
         <div>
-          <select value={detalle.id_producto} onChange={e => setDetalle({ ...detalle, id_producto: e.target.value })}>
+          <select
+            value={detalle.id_producto}
+            onChange={e => setDetalle({ id_producto: e.target.value, cantidad: 1 })}
+          >
             <option value="">Producto</option>
             {productos.map(p => (
               <option key={p.id_producto} value={p.id_producto}>{p.nombre}</option>
             ))}
           </select>
-          <input type="number" min={1} value={detalle.cantidad} onChange={e => setDetalle({ ...detalle, cantidad: parseInt(e.target.value) })} />
-          <button type="button" onClick={handleAddDetalle}>Agregar producto</button>
+          {/* Mostrar stock disponible */}
+          {detalle.id_producto && (
+            <span style={{ marginLeft: 8, color: '#888' }}>
+              Stock: {stockSeleccionado}
+            </span>
+          )}
+          {/* Input manual de cantidad */}
+          <input
+            type="number"
+            min={1}
+            value={detalle.cantidad}
+            onChange={e => setDetalle({ ...detalle, cantidad: parseInt(e.target.value) || 1 })}
+            disabled={!detalle.id_producto}
+            style={{ marginLeft: 8, width: 60 }}
+          />
+          {/* Mensaje de stock insuficiente */}
+          {detalle.id_producto && detalle.cantidad > stockSeleccionado && (
+            <span style={{ color: 'red', marginLeft: 8 }}>Stock insuficiente</span>
+          )}
+          <button
+            type="button"
+            onClick={handleAddDetalle}
+            disabled={
+              !detalle.id_producto ||
+              !detalle.cantidad ||
+              detalle.cantidad < 1 ||
+              detalle.cantidad > stockSeleccionado
+            }
+            style={{ marginLeft: 8 }}
+          >
+            Agregar producto
+          </button>
         </div>
         {/* Lista de productos agregados */}
         <ul>
@@ -176,7 +235,7 @@ const Ventas = () => {
           {ventas.map(venta => (
             <tr key={venta.id_venta}>
               <td>{venta.id_venta}</td>
-              <td>{venta.fecha}</td>
+              <td>{formatearFecha(venta.fecha)}</td>
               <td>{venta.articulos}</td>
               <td>${venta.total}</td>
               <td>{venta.nombre_usuario}</td>

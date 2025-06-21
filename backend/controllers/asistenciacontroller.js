@@ -47,3 +47,11 @@ exports.updateAsistencia = (req, res) => {
         }
     );
 };
+
+exports.deleteAsistencia = (req, res) => {
+    const { id } = req.params;
+    db.query('DELETE FROM asistencia WHERE id_asistencia=?', [id], (err, result) => {
+        if (err) return res.status(500).json({ error: err });
+        res.json({ message: 'Asistencia eliminada' });
+    });
+};

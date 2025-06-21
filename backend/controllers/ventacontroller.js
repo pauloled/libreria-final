@@ -51,7 +51,22 @@ exports.createVenta = (req, res) => {
                 [detalleValues],
                 (err2) => {
                     if (err2) return res.status(500).json({ error: err2 });
-                    res.json({ message: 'Venta creada' });
+                    // Descontar stock de cada producto
+                    let queries = detalles.map(d =>
+                        new Promise((resolve, reject) => {
+                            db.query(
+                                'UPDATE producto SET stock = stock - ? WHERE id_producto = ?',
+                                [d.cantidad, d.id_producto],
+                                (err3) => {
+                                    if (err3) reject(err3);
+                                    else resolve();
+                                }
+                            );
+                        })
+                    );
+                    Promise.all(queries)
+                        .then(() => res.json({ message: 'Venta creada y stock descontado' }))
+                        .catch(error => res.status(500).json({ error }));
                 }
             );
         }
@@ -61,11 +76,105 @@ exports.createVenta = (req, res) => {
 // Eliminar venta y sus detalles
 exports.deleteVenta = (req, res) => {
     const { id } = req.params;
-    db.query('DELETE FROM detalle_venta WHERE id_venta=?', [id], (err) => {
+    // 1. Obtener los detalles de la venta
+    db.query('SELECT id_producto, cantidad FROM detalle_venta WHERE id_venta=?', [id], (err, detalles) => {
         if (err) return res.status(500).json({ error: err });
-        db.query('DELETE FROM venta WHERE id_venta=?', [id], (err2) => {
-            if (err2) return res.status(500).json({ error: err2 });
-            res.json({ message: 'Venta eliminada' });
-        });
+        // 2. Reponer stock de cada producto
+        let queries = detalles.map(d =>
+            new Promise((resolve, reject) => {
+                db.query(
+                    'UPDATE producto SET stock = stock + ? WHERE id_producto = ?',
+                    [d.cantidad, d.id_producto],
+                    (err2) => {
+                        if (err2) reject(err2);
+                        else resolve();
+                    }
+                );
+            })
+        );
+        Promise.all(queries)
+            .then(() => {
+                // 3. Eliminar detalles y venta
+                db.query('DELETE FROM detalle_venta WHERE id_venta=?', [id], (err3) => {
+                    if (err3) return res.status(500).json({ error: err3 });
+                    db.query('DELETE FROM venta WHERE id_venta=?', [id], (err4) => {
+                        if (err4) return res.status(500).json({ error: err4 });
+                        res.json({ message: 'Venta eliminada y stock repuesto' });
+                    });
+                });
+            })
+            .catch(error => res.status(500).json({ error }));
+    });
+};
+
+// Editar venta
+exports.updateVenta = (req, res) => {
+    const { id } = req.params;
+    const { fecha, total, id_usuario, detalles } = req.body;
+
+    // 1. Obtener detalles anteriores
+    db.query('SELECT id_producto, cantidad FROM detalle_venta WHERE id_venta=?', [id], (err, detallesAnt) => {
+        if (err) return res.status(500).json({ error: err });
+
+        // 2. Reponer stock de los productos anteriores
+        let reponerQueries = detallesAnt.map(d =>
+            new Promise((resolve, reject) => {
+                db.query(
+                    'UPDATE producto SET stock = stock + ? WHERE id_producto = ?',
+                    [d.cantidad, d.id_producto],
+                    (err2) => {
+                        if (err2) reject(err2);
+                        else resolve();
+                    }
+                );
+            })
+        );
+
+        Promise.all(reponerQueries)
+            .then(() => {
+                // 3. Actualizar venta
+                db.query(
+                    'UPDATE venta SET fecha=?, total=?, id_usuario=? WHERE id_venta=?',
+                    [fecha, total, id_usuario, id],
+                    (err3) => {
+                        if (err3) return res.status(500).json({ error: err3 });
+
+                        // 4. Eliminar detalles anteriores
+                        db.query('DELETE FROM detalle_venta WHERE id_venta=?', [id], (err4) => {
+                            if (err4) return res.status(500).json({ error: err4 });
+
+                            // 5. Insertar nuevos detalles
+                            const detalleValues = detalles.map(d =>
+                                [id, d.id_producto, d.cantidad, d.subtotal]
+                            );
+                            db.query(
+                                'INSERT INTO detalle_venta (id_venta, id_producto, cantidad, subtotal) VALUES ?',
+                                [detalleValues],
+                                (err5) => {
+                                    if (err5) return res.status(500).json({ error: err5 });
+
+                                    // 6. Descontar stock de los nuevos productos
+                                    let descontarQueries = detalles.map(d =>
+                                        new Promise((resolve, reject) => {
+                                            db.query(
+                                                'UPDATE producto SET stock = stock - ? WHERE id_producto = ?',
+                                                [d.cantidad, d.id_producto],
+                                                (err6) => {
+                                                    if (err6) reject(err6);
+                                                    else resolve();
+                                                }
+                                            );
+                                        })
+                                    );
+                                    Promise.all(descontarQueries)
+                                        .then(() => res.json({ message: 'Venta actualizada y stock ajustado' }))
+                                        .catch(error => res.status(500).json({ error }));
+                                }
+                            );
+                        });
+                    }
+                );
+            })
+            .catch(error => res.status(500).json({ error }));
     });
 };
