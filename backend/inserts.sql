@@ -21,7 +21,7 @@ INSERT INTO categoria (nombre_categoria) VALUES
 ('Pegamentos'),
 ('Pinceles'),
 ('Tijeras'),
-('Resmas'),
+('Artistico'),
 ('Accesorios');
 
 -- Insertar marcas
