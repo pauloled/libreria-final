@@ -101,11 +101,12 @@ npm run dev
 | Módulo         | Funciones disponibles                                                                |
 |----------------|--------------------------------------------------------------------------------------|
 | **Login**      | Acceso seguro y distinción de roles (admin, encargado, empleado)                     |
-| **Productos**  | Visualización, alta, edición y baja de productos (según rol)                         |
-| **Ventas**     | Registro, listado y filtrado de ventas                                               |
-| **Usuarios**   | Alta, edición, baja y asignación de roles                                            |
-| **Asistencias**| Registro y corrección de asistencias, filtrado por usuario y fecha                   |
-| **Ingresos**   | Registro de ingresos de stock, edición y eliminación                                 |
+| **Productos**  | Visualización, filtrado, alta, edición y baja de productos (según rol)               |
+| **Ventas**     | Registro, listado y filtrado de ventas  (segun rol)                                  |
+| **Usuarios**   | Listado, alta, edición, baja y asignación de roles (admin)                           |
+| **Asistencias** | Registro y corrección de asistencias, filtrado por usuario y fecha (segun rol)      |
+| **Ingresos**   | Registro de ingresos de stock, filtrado edición y eliminación (admin y encargado)    |
+| **Proveedores** | Registro, listado, alta, edición y eliminación de proveedores (admin y encargado)   |
 | **Paneles Home** | Panel de inicio personalizado según el rol con accesos rápidos a los módulos clave |
 
 ---
