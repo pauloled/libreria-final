@@ -46,9 +46,14 @@ const Ventas = () => {
       .catch(() => setError('No se pudieron cargar las ventas.'));
   };
 
-  // Filtrar ventas
+  // Filtrar ventas (en tiempo real)
   const handleFiltro = (e) => {
     setFiltros({ ...filtros, [e.target.name]: e.target.value });
+  };
+
+  // Limpiar filtros
+  const limpiarFiltros = () => {
+    setFiltros({ fecha: '', usuario: '' });
   };
 
   useEffect(() => {
@@ -137,7 +142,7 @@ const Ventas = () => {
       {error && <p style={{color: 'red'}}>{error}</p>}
 
       {/* Filtros */}
-      <div style={{ marginBottom: 16 }}>
+      <div style={{ marginBottom: 16, display: 'flex', gap: 12, alignItems: 'center' }}>
         <input type="date" name="fecha" value={filtros.fecha} onChange={handleFiltro} />
         <select name="usuario" value={filtros.usuario} onChange={handleFiltro}>
           <option value="">Todos los usuarios</option>
@@ -145,7 +150,7 @@ const Ventas = () => {
             <option key={u.id_usuario} value={u.id_usuario}>{u.nombre_usuario}</option>
           ))}
         </select>
-        <button onClick={cargarVentas}>Filtrar</button>
+        <button onClick={limpiarFiltros}>Limpiar filtros</button>
       </div>
 
       {/* Formulario para crear venta */}
@@ -162,7 +167,7 @@ const Ventas = () => {
             <option key={u.id_usuario} value={u.id_usuario}>{u.nombre_usuario}</option>
           ))}
         </select>
-                {/* Detalle de productos */}
+        {/* Detalle de productos */}
         <div>
           <select
             value={detalle.id_producto}

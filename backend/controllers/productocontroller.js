@@ -3,8 +3,8 @@ const db = require('../configDB/database');
 // Obtener todos los productos con nombre de categoría y marca
 exports.getAllProductos = (req, res) => {
     const sql = `
-        SELECT p.id_producto, p.nombre, p.descripcion, p.precio, p.stock, 
-               c.nombre_categoria, m.nombre_marca, p.imagen_url
+        SELECT p.id_producto, p.nombre, p.descripcion, p.precio, p.stock,  
+               p.id_categoria, c.nombre_categoria, p.id_marca, m.nombre_marca, p.imagen_url
         FROM producto p
         LEFT JOIN categoria c ON p.id_categoria = c.id_categoria
         LEFT JOIN marca m ON p.id_marca = m.id_marca

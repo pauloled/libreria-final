@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { PRODUCTOS } from '../enpoints/endpoints';
-
-// Agrega estos imports si tienes los endpoints definidos
-import { CATEGORIAS, MARCAS } from '../enpoints/endpoints';
+import { PRODUCTOS, CATEGORIAS, MARCAS } from '../enpoints/endpoints';
 
 const Productos = () => {
   const [productos, setProductos] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [marcas, setMarcas] = useState([]);
   const [error, setError] = useState('');
+  const [busqueda, setBusqueda] = useState('');
+  const [filtroCategoria, setFiltroCategoria] = useState('');
+  const [filtroMarca, setFiltroMarca] = useState('');
+  const [soloSinStock, setSoloSinStock] = useState(false);
   const [nuevo, setNuevo] = useState({
     nombre: '',
     descripcion: '',
@@ -22,7 +23,6 @@ const Productos = () => {
   const [editando, setEditando] = useState(null);
   const [editData, setEditData] = useState({});
 
-  // Cargar productos, categorías y marcas
   useEffect(() => {
     cargarProductos();
     axios.get(CATEGORIAS).then(res => setCategorias(res.data));
@@ -38,7 +38,6 @@ const Productos = () => {
       .catch(() => setError('No se pudieron cargar los productos.'));
   };
 
-  // Crear producto
   const handleCrear = async (e) => {
     e.preventDefault();
     setError('');
@@ -63,7 +62,6 @@ const Productos = () => {
     }
   };
 
-  // Eliminar producto
   const handleEliminar = async (id) => {
     if (!window.confirm('¿Seguro que deseas eliminar este producto?')) return;
     try {
@@ -74,7 +72,6 @@ const Productos = () => {
     }
   };
 
-  // Iniciar edición
   const handleEditar = (producto) => {
     setEditando(producto.id_producto);
     setEditData({
@@ -84,7 +81,6 @@ const Productos = () => {
     });
   };
 
-  // Guardar edición
   const handleGuardarEdicion = async (id) => {
     try {
       await axios.put(`${PRODUCTOS}/${id}`, {
@@ -99,16 +95,65 @@ const Productos = () => {
     }
   };
 
-  // Cancelar edición
   const handleCancelarEdicion = () => {
     setEditando(null);
     setEditData({});
   };
 
+  // Filtro avanzado
+  const productosFiltrados = productos
+    .filter(prod =>
+      prod.nombre.toLowerCase().includes(busqueda.toLowerCase())
+      && (filtroCategoria === '' || String(prod.id_categoria) === String(filtroCategoria))
+      && (filtroMarca === '' || String(prod.id_marca) === String(filtroMarca))
+      && (!soloSinStock || prod.stock === 0)
+    );
+
   return (
     <div>
       <h2>Gestión de Productos</h2>
       {error && <p style={{color: 'red'}}>{error}</p>}
+
+      {/* Barra de búsqueda y filtros */}
+      <div style={{ display: 'flex', gap: 12, marginBottom: 16, alignItems: 'center', flexWrap: 'wrap' }}>
+        <input
+          type="text"
+          placeholder="Buscar producto por nombre..."
+          value={busqueda}
+          onChange={e => setBusqueda(e.target.value)}
+          style={{ width: 200, padding: 6 }}
+        />
+        <select value={filtroCategoria} onChange={e => setFiltroCategoria(e.target.value)}>
+          <option value="">Todas las categorías</option>
+          {categorias.map(cat => (
+            <option key={cat.id_categoria} value={cat.id_categoria}>{cat.nombre_categoria}</option>
+          ))}
+        </select>
+        <select value={filtroMarca} onChange={e => setFiltroMarca(e.target.value)}>
+          <option value="">Todas las marcas</option>
+          {marcas.map(mar => (
+            <option key={mar.id_marca} value={mar.id_marca}>{mar.nombre_marca}</option>
+          ))}
+        </select>
+        <label style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          <input
+            type="checkbox"
+            checked={soloSinStock}
+            onChange={e => setSoloSinStock(e.target.checked)}
+          />
+          Solo sin stock
+        </label>
+        <button
+          onClick={() => {
+            setBusqueda('');
+            setFiltroCategoria('');
+            setFiltroMarca('');
+            setSoloSinStock(false);
+          }}
+        >
+          Limpiar filtros
+        </button>
+      </div>
 
       <form onSubmit={handleCrear} style={{marginBottom: 20, display: 'flex', gap: 8, flexWrap: 'wrap'}}>
         <input type="text" placeholder="Nombre" value={nuevo.nombre} onChange={e => setNuevo({ ...nuevo, nombre: e.target.value })} required />
@@ -145,7 +190,7 @@ const Productos = () => {
           </tr>
         </thead>
         <tbody>
-          {productos.map(prod => (
+          {productosFiltrados.map(prod => (
             <tr key={prod.id_producto}>
               {editando === prod.id_producto ? (
                 <>

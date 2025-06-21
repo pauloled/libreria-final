@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { INGRESOS, PRODUCTOS } from '../enpoints/endpoints';
-
-// Puedes agregar el endpoint de proveedores si lo tienes
 import { PROVEEDORES } from '../enpoints/endpoints';
 
 // Formatear fecha
@@ -30,6 +28,9 @@ const Ingresos = () => {
   });
   const [editando, setEditando] = useState(null);
   const [editData, setEditData] = useState({});
+  // Filtros
+  const [filtroFecha, setFiltroFecha] = useState('');
+  const [filtroProveedor, setFiltroProveedor] = useState('');
 
   useEffect(() => {
     cargarIngresos();
@@ -42,7 +43,6 @@ const Ingresos = () => {
   const cargarIngresos = () => {
     axios.get(INGRESOS)
       .then(res => {
-        // Ordenar por fecha descendente
         setIngresos(res.data.sort((a, b) => new Date(b.fecha) - new Date(a.fecha)));
       })
       .catch(() => setError('No se pudieron cargar los ingresos.'));
@@ -112,10 +112,35 @@ const Ingresos = () => {
     setEditData({});
   };
 
+  // Filtrado de ingresos
+  const ingresosFiltrados = ingresos.filter(ing =>
+    (!filtroFecha || ing.fecha.slice(0, 10) === filtroFecha) &&
+    (!filtroProveedor || String(ing.id_proveedor) === String(filtroProveedor))
+);
+
   return (
     <div>
       <h2>Página de Ingresos</h2>
       {error && <p style={{color: 'red'}}>{error}</p>}
+
+      {/* Barra de filtros */}
+      <div style={{ marginBottom: 16, display: 'flex', gap: 12, alignItems: 'center' }}>
+        <input
+          type="date"
+          value={filtroFecha}
+          onChange={e => setFiltroFecha(e.target.value)}
+        />
+        <select
+          value={filtroProveedor}
+          onChange={e => setFiltroProveedor(e.target.value)}
+        >
+          <option value="">Todos los proveedores</option>
+          {proveedores.map(pr => (
+            <option key={pr.id_proveedor} value={pr.id_proveedor}>{pr.nombre}</option>
+          ))}
+        </select>
+        <button onClick={() => { setFiltroFecha(''); setFiltroProveedor(''); }}>Limpiar filtros</button>
+      </div>
 
       {/* Formulario para crear ingreso */}
       <form onSubmit={handleCrear} style={{marginBottom: 20, display: 'flex', gap: 8, flexWrap: 'wrap'}}>
@@ -150,7 +175,7 @@ const Ingresos = () => {
           </tr>
         </thead>
         <tbody>
-          {[...ingresos].map(ing => (
+          {ingresosFiltrados.map(ing => (
             <tr key={ing.id_ingreso}>
               {editando === ing.id_ingreso ? (
                 <>

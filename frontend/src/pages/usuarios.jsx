@@ -14,6 +14,9 @@ const Usuarios = () => {
   });
   const [editando, setEditando] = useState(null);
   const [editData, setEditData] = useState({});
+  const [filtroNombre, setFiltroNombre] = useState('');
+  const [filtroCorreo, setFiltroCorreo] = useState('');
+  const [filtroRol, setFiltroRol] = useState('');
   const navigate = useNavigate();
 
   const cargarUsuarios = () => {
@@ -88,10 +91,49 @@ const Usuarios = () => {
     navigate(`/asistencias?usuario=${id_usuario}`);
   };
 
+  // Limpiar filtros
+  const limpiarFiltros = () => {
+    setFiltroNombre('');
+    setFiltroCorreo('');
+    setFiltroRol('');
+  };
+
+  // Filtrado en tiempo real
+  const usuariosFiltrados = usuarios.filter(user =>
+    user.nombre_usuario.toLowerCase().includes(filtroNombre.toLowerCase()) &&
+    user.correo.toLowerCase().includes(filtroCorreo.toLowerCase()) &&
+    (filtroRol === '' || user.rol === filtroRol)
+  );
+
   return (
     <div>
       <h2>Gestión de Usuarios</h2>
       {error && <p style={{color: 'red'}}>{error}</p>}
+
+      {/* Barra de filtros */}
+      <div style={{ display: 'flex', gap: 12, marginBottom: 16, alignItems: 'center', flexWrap: 'wrap' }}>
+        <input
+          type="text"
+          placeholder="Buscar por nombre"
+          value={filtroNombre}
+          onChange={e => setFiltroNombre(e.target.value)}
+          style={{ width: 180 }}
+        />
+        <input
+          type="text"
+          placeholder="Buscar por correo"
+          value={filtroCorreo}
+          onChange={e => setFiltroCorreo(e.target.value)}
+          style={{ width: 180 }}
+        />
+        <select value={filtroRol} onChange={e => setFiltroRol(e.target.value)}>
+          <option value="">Todos los roles</option>
+          <option value="empleado">Empleado</option>
+          <option value="encargado">Encargado</option>
+          <option value="admin">Admin</option>
+        </select>
+        <button onClick={limpiarFiltros}>Limpiar filtros</button>
+      </div>
 
       <form onSubmit={handleCrear} style={{marginBottom: 20, display: 'flex', gap: 8, flexWrap: 'wrap'}}>
         <input type="text" placeholder="Nombre de usuario" value={nuevo.nombre_usuario} onChange={e => setNuevo({ ...nuevo, nombre_usuario: e.target.value })} required />
@@ -117,7 +159,7 @@ const Usuarios = () => {
           </tr>
         </thead>
         <tbody>
-          {usuarios.map(user => (
+          {usuariosFiltrados.map(user => (
             <tr key={user.id_usuario}>
               {editando === user.id_usuario ? (
                 <>

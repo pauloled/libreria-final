@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ASISTENCIAS, USUARIOS } from '../enpoints/endpoints';
+import useUserStore from '../store/userStore';
 
 // Función para formatear fecha
 function formatearFecha(fechaStr) {
@@ -20,7 +21,6 @@ function formatearHora(horaStr) {
 
 // Función para comparar fechas y horas correctamente
 function compararAsistencias(a, b) {
-  // Si la hora está vacía, usar '00:00'
   const fechaHoraA = `${a.fecha}T${a.hora_entrada ? a.hora_entrada.slice(0,5) : '00:00'}`;
   const fechaHoraB = `${b.fecha}T${b.hora_entrada ? b.hora_entrada.slice(0,5) : '00:00'}`;
   return new Date(fechaHoraB) - new Date(fechaHoraA);
@@ -41,7 +41,8 @@ const Asistencias = () => {
   const [editando, setEditando] = useState(null);
   const [editData, setEditData] = useState({});
 
-  // Cargar asistencias y usuarios
+  const usuario = useUserStore(state => state.usuario);
+
   useEffect(() => {
     cargarAsistencias();
     axios.get(USUARIOS).then(res => setUsuarios(res.data));
@@ -58,9 +59,13 @@ const Asistencias = () => {
       .catch(() => setError('No se pudieron cargar las asistencias.'));
   };
 
-  // Filtrar asistencias
   const handleFiltro = (e) => {
     setFiltros({ ...filtros, [e.target.name]: e.target.value });
+  };
+
+  // Limpiar filtros
+  const limpiarFiltros = () => {
+    setFiltros({ fecha: '', usuario: '' });
   };
 
   useEffect(() => {
@@ -68,7 +73,6 @@ const Asistencias = () => {
     // eslint-disable-next-line
   }, [filtros]);
 
-  // Crear asistencia
   const handleCrear = async (e) => {
     e.preventDefault();
     setError('');
@@ -87,7 +91,6 @@ const Asistencias = () => {
     }
   };
 
-  // Eliminar asistencia
   const handleEliminar = async (id) => {
     if (!window.confirm('¿Seguro que deseas eliminar esta asistencia?')) return;
     try {
@@ -98,13 +101,11 @@ const Asistencias = () => {
     }
   };
 
-  // Iniciar edición
   const handleEditar = (asist) => {
     setEditando(asist.id_asistencia);
     setEditData({ ...asist });
   };
 
-  // Guardar edición
   const handleGuardarEdicion = async (id) => {
     try {
       await axios.put(`${ASISTENCIAS}/${id}`, editData);
@@ -115,10 +116,50 @@ const Asistencias = () => {
     }
   };
 
-  // Cancelar edición
   const handleCancelarEdicion = () => {
     setEditando(null);
     setEditData({});
+  };
+
+  // --- BLOQUE DE INGRESO/SALIDA PARA EL USUARIO LOGUEADO ---
+  const hoy = new Date().toISOString().slice(0,10);
+  const asistenciaPendiente = asistencias.find(a =>
+    a.id_usuario === usuario?.id_usuario &&
+    a.fecha === hoy &&
+    !a.hora_salida
+  );
+
+  const handleIngreso = async () => {
+    const ahora = new Date();
+    const fecha = ahora.toISOString().slice(0,10);
+    const hora_entrada = ahora.toTimeString().slice(0,5);
+    try {
+      await axios.post(ASISTENCIAS, {
+        id_usuario: usuario.id_usuario,
+        fecha,
+        hora_entrada,
+        hora_salida: null,
+        corregida: 'NO'
+      });
+      cargarAsistencias();
+    } catch {
+      setError('No se pudo registrar la asistencia.');
+    }
+  };
+
+  const handleSalida = async () => {
+    const ahora = new Date();
+    const hora_salida = ahora.toTimeString().slice(0,5);
+    try {
+      await axios.put(`${ASISTENCIAS}/${asistenciaPendiente.id_asistencia}`, {
+        ...asistenciaPendiente,
+        hora_salida,
+        corregida: 'NO'
+      });
+      cargarAsistencias();
+    } catch {
+      setError('No se pudo registrar la salida.');
+    }
   };
 
   return (
@@ -135,8 +176,24 @@ const Asistencias = () => {
             <option key={u.id_usuario} value={u.id_usuario}>{u.nombre_usuario}</option>
           ))}
         </select>
-        <button onClick={cargarAsistencias}>Filtrar</button>
+        <button onClick={limpiarFiltros} style={{ marginLeft: 8 }}>Limpiar filtros</button>
       </div>
+
+      {/* Botones de ingreso/salida para el usuario logueado */}
+      {usuario && (
+        <div style={{ marginBottom: 16 }}>
+          {!asistenciaPendiente ? (
+            <button onClick={handleIngreso}>Registrar Ingreso</button>
+          ) : (
+            <button onClick={handleSalida}>Registrar Salida</button>
+          )}
+          {asistenciaPendiente && (
+            <div style={{ color: 'orange', marginTop: 8 }}>
+              Asistencia pendiente: {asistenciaPendiente.fecha} - Ingreso: {formatearHora(asistenciaPendiente.hora_entrada)}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Formulario para crear asistencia */}
       <form onSubmit={handleCrear} style={{ marginBottom: 20, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -172,6 +229,9 @@ const Asistencias = () => {
         <tbody>
           {[...asistencias]
             .sort(compararAsistencias)
+            .filter(asist =>
+              !(usuario && asist.id_usuario === usuario.id_usuario && asist.fecha === hoy && !asist.hora_salida)
+            )
             .map(asist => (
             <tr key={asist.id_asistencia}>
               {editando === asist.id_asistencia ? (

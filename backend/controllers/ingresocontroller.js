@@ -3,7 +3,7 @@ const db = require('../configDB/database');
 // Listar ingresos
 exports.getAllIngresos = (req, res) => {
     db.query(
-        `SELECT i.id_ingreso, i.fecha, p.nombre AS producto, pr.nombre AS proveedor, i.cantidad, i.precio_unitario, i.subtotal
+        `SELECT i.id_ingreso, i.fecha, p.nombre AS producto, pr.nombre AS proveedor, i.cantidad, i.precio_unitario, i.subtotal, i.id_proveedor
          FROM ingreso_stock i
          LEFT JOIN producto p ON i.id_producto = p.id_producto
          LEFT JOIN proveedor pr ON i.id_proveedor = pr.id_proveedor

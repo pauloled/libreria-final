@@ -26,7 +26,13 @@ exports.createAsistencia = (req, res) => {
     const { id_usuario, fecha, hora_entrada, hora_salida, corregida } = req.body;
     db.query(
         'INSERT INTO asistencia (id_usuario, fecha, hora_entrada, hora_salida, corregida) VALUES (?, ?, ?, ?, ?)',
-        [id_usuario, fecha, hora_entrada, hora_salida, corregida],
+        [
+            id_usuario,
+            fecha,
+            hora_entrada,
+            hora_salida ? hora_salida : null, // Guarda NULL si es null, undefined o string vacío
+            corregida
+        ],
         (err, result) => {
             if (err) return res.status(500).json({ error: err });
             res.json({ message: 'Asistencia creada' });
@@ -40,7 +46,12 @@ exports.updateAsistencia = (req, res) => {
     const { hora_entrada, hora_salida, corregida } = req.body;
     db.query(
         'UPDATE asistencia SET hora_entrada=?, hora_salida=?, corregida=? WHERE id_asistencia=?',
-        [hora_entrada, hora_salida, corregida, id],
+        [
+            hora_entrada,
+            hora_salida ? hora_salida : null, // Guarda NULL si es null, undefined o string vacío
+            corregida,
+            id
+        ],
         (err, result) => {
             if (err) return res.status(500).json({ error: err });
             res.json({ message: 'Asistencia actualizada' });

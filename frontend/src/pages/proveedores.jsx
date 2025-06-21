@@ -8,6 +8,9 @@ const Proveedores = () => {
   const [nuevo, setNuevo] = useState({ nombre: '', email: '', telefono: '' });
   const [editando, setEditando] = useState(null);
   const [editData, setEditData] = useState({});
+  const [filtroNombre, setFiltroNombre] = useState('');
+  const [filtroEmail, setFiltroEmail] = useState('');
+  const [filtroTelefono, setFiltroTelefono] = useState('');
 
   useEffect(() => {
     cargarProveedores();
@@ -61,10 +64,50 @@ const Proveedores = () => {
     setEditData({});
   };
 
+  // Limpiar filtros
+  const limpiarFiltros = () => {
+    setFiltroNombre('');
+    setFiltroEmail('');
+    setFiltroTelefono('');
+  };
+
+  // Filtrado en tiempo real
+  const proveedoresFiltrados = proveedores.filter(prov =>
+    prov.nombre.toLowerCase().includes(filtroNombre.toLowerCase()) &&
+    prov.email.toLowerCase().includes(filtroEmail.toLowerCase()) &&
+    prov.telefono.toLowerCase().includes(filtroTelefono.toLowerCase())
+  );
+
   return (
     <div>
       <h2>Gestión de Proveedores</h2>
       {error && <p style={{color: 'red'}}>{error}</p>}
+
+      {/* Barra de filtros */}
+      <div style={{ display: 'flex', gap: 12, marginBottom: 16, alignItems: 'center', flexWrap: 'wrap' }}>
+        <input
+          type="text"
+          placeholder="Buscar por nombre"
+          value={filtroNombre}
+          onChange={e => setFiltroNombre(e.target.value)}
+          style={{ width: 160 }}
+        />
+        <input
+          type="text"
+          placeholder="Buscar por email"
+          value={filtroEmail}
+          onChange={e => setFiltroEmail(e.target.value)}
+          style={{ width: 160 }}
+        />
+        <input
+          type="text"
+          placeholder="Buscar por teléfono"
+          value={filtroTelefono}
+          onChange={e => setFiltroTelefono(e.target.value)}
+          style={{ width: 140 }}
+        />
+        <button onClick={limpiarFiltros}>Limpiar filtros</button>
+      </div>
 
       <form onSubmit={handleCrear} style={{marginBottom: 20, display: 'flex', gap: 8, flexWrap: 'wrap'}}>
         <input type="text" placeholder="Nombre" value={nuevo.nombre} onChange={e => setNuevo({ ...nuevo, nombre: e.target.value })} required />
@@ -84,7 +127,7 @@ const Proveedores = () => {
           </tr>
         </thead>
         <tbody>
-          {proveedores.map(prov => (
+          {proveedoresFiltrados.map(prov => (
             <tr key={prov.id_proveedor}>
               {editando === prov.id_proveedor ? (
                 <>
