@@ -39,7 +39,6 @@ exports.createAsistencia = (req, res) => {
         }
     );
 };
-
 // Editar asistencia (por ejemplo, para corregir)
 exports.updateAsistencia = (req, res) => {
     const { id } = req.params;

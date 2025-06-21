@@ -94,3 +94,11 @@ html, body {
   padding: 0;
   background: linear-gradient(135deg, #2a0845, #6441a5);
 }
+.login-logo {
+  display: block;
+  margin: 0 auto 20px auto;
+  width: 150px;
+  height: auto;
+  border-radius: 12px;
+}
+

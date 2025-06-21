@@ -3,7 +3,6 @@ import axios from 'axios';
 import { LOGIN } from '../enpoints/endpoints';
 import '../Styles/login.css';
 
-
 const Login = ({ onLogin }) => {
   const [nombre_usuario, setNombreUsuario] = useState('');
   const [contrasena, setContrasena] = useState('');
@@ -41,6 +40,7 @@ const Login = ({ onLogin }) => {
           
         </div>
         <div className="login-right">
+<img src="/assets/logopng.png" alt="Logo Librería" className="login-logo" />
           <h2>Iniciar Sesion</h2>
           <form onSubmit={handleSubmit}>
             <input
