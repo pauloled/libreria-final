@@ -4,16 +4,25 @@ const db = require('../configDB/database');
 exports.getAllVentas = (req, res) => {
     const { fecha, usuario } = req.query;
     let sql = `
-        SELECT v.id_venta, v.fecha, v.hora, v.total, u.nombre_usuario, v.id_usuario,
+        SELECT 
+            v.id_venta, 
+            v.fecha, 
+            v.hora, 
+            v.total, 
+            u.nombre_usuario, 
+            v.id_usuario,
+            -- Artículos vendidos
             GROUP_CONCAT(DISTINCT CONCAT(p.nombre, ' (x', dv.cantidad, ')') SEPARATOR ', ') AS articulos,
-            GROUP_CONCAT(dv.cantidad) AS cantidades,
-            GROUP_CONCAT(dv.subtotal) AS subtotales,
-            GROUP_CONCAT(CONCAT(mp.tipo, ': $', mp.monto) SEPARATOR ', ') AS metodos_pago
+            -- Métodos de pago como subconsulta para evitar duplicados
+            (
+                SELECT GROUP_CONCAT(CONCAT(mp.tipo, ': $', mp.monto) SEPARATOR ' | ')
+                FROM metodo_pago mp
+                WHERE mp.id_venta = v.id_venta
+            ) AS metodos_pago
         FROM venta v
         LEFT JOIN usuario u ON v.id_usuario = u.id_usuario
         LEFT JOIN detalle_venta dv ON v.id_venta = dv.id_venta
         LEFT JOIN producto p ON dv.id_producto = p.id_producto
-        LEFT JOIN metodo_pago mp ON v.id_venta = mp.id_venta
     `;
     let params = [];
     let where = [];
