@@ -193,131 +193,129 @@ const AsistenciasContainer = () => {
 
   // Render principal
   return (
-    <div>
-      <h2>Gestión de Asistencias</h2>
-      {error && <p style={{color: 'red'}}>{error}</p>}
+    <div className="container-fluid mt-4 px-4">
+      <h2 className="mb-3 display-5">Gestión de Asistencias</h2>
+      {error && <div className="alert alert-danger">{error}</div>}
 
       {/* Filtros */}
-      <div style={{ marginBottom: 16 }}>
-        <input type="date" name="fecha" value={filtros.fecha} onChange={handleFiltro} />
+      <div className="row g-2 mb-3 align-items-end flex-wrap">
+        <div className="col-auto">
+          <input type="date" name="fecha" className="form-control" value={filtros.fecha} onChange={handleFiltro} />
+        </div>
         {usuario?.rol !== 'empleado' && (
-          <select name="usuario" value={filtros.usuario} onChange={handleFiltro}>
-            <option value="">Todos los usuarios</option>
-            {usuarios.map(u => (
-              <option key={u.id_usuario} value={u.id_usuario}>{u.nombre_usuario}</option>
-            ))}
-          </select>
+          <div className="col-auto">
+            <select name="usuario" className="form-select" value={filtros.usuario} onChange={handleFiltro}>
+              <option value="">Todos los usuarios</option>
+              {usuarios.map(u => (
+                <option key={u.id_usuario} value={u.id_usuario}>{u.nombre_usuario}</option>
+              ))}
+            </select>
+          </div>
         )}
-        <button onClick={limpiarFiltros} style={{ marginLeft: 8 }}>Limpiar filtros</button>
+        <div className="col-auto">
+          <button className="btn btn-secondary" onClick={limpiarFiltros}>Limpiar filtros</button>
+        </div>
       </div>
 
       {/* Solo fecha y botones de registro */}
       {usuario && (
-        <div style={{
-          marginBottom: 16,
-          border: '1px solid #ccc',
-          padding: 12,
-          borderRadius: 8,
-          background: '#f9f9f9',
-          color: '#333'
-        }}>
+        <div className="mb-3 p-3 bg-light border rounded text-dark" style={{ maxWidth: 400 }}>
           <div>Fecha: {hoy}</div>
-          <div style={{marginTop: 8}}>
-            <button
-              onClick={handleIngreso}
-              style={{ marginRight: 8 }}
-            >
-              Registrar Ingreso
-            </button>
-            <button onClick={handleSalida}>Registrar Salida</button>
+          <div className="mt-2">
+            <button className="btn btn-success me-2" onClick={handleIngreso}>Registrar Ingreso</button>
+            <button className="btn btn-primary" onClick={handleSalida}>Registrar Salida</button>
           </div>
         </div>
       )}
 
       {/* Formulario para crear asistencia (solo admins/encargados) */}
       {usuario?.rol !== 'empleado' && (
-        <form onSubmit={handleCrear} style={{ marginBottom: 20, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          <select value={nuevo.id_usuario} onChange={e => setNuevo({ ...nuevo, id_usuario: e.target.value })} required>
+        <form
+          onSubmit={handleCrear}
+          className="p-4 bg-white rounded border mb-4 d-flex flex-wrap gap-2 align-items-end"
+          style={{ maxWidth: 1200 }}
+        >
+          <select className="form-select" value={nuevo.id_usuario} onChange={e => setNuevo({ ...nuevo, id_usuario: e.target.value })} required style={{ maxWidth: 180 }}>
             <option value="">Usuario</option>
             {usuarios.map(u => (
               <option key={u.id_usuario} value={u.id_usuario}>{u.nombre_usuario}</option>
             ))}
           </select>
-          <input type="date" value={nuevo.fecha} onChange={e => setNuevo({ ...nuevo, fecha: e.target.value })} required />
-          <input type="time" value={nuevo.hora_entrada} onChange={e => setNuevo({ ...nuevo, hora_entrada: e.target.value })} required />
-          <input type="time" value={nuevo.hora_salida} onChange={e => setNuevo({ ...nuevo, hora_salida: e.target.value })} required />
-          <select value={nuevo.corregida} onChange={e => setNuevo({ ...nuevo, corregida: e.target.value })}>
+          <input type="date" className="form-control" value={nuevo.fecha} onChange={e => setNuevo({ ...nuevo, fecha: e.target.value })} required style={{ maxWidth: 140 }} />
+          <input type="time" className="form-control" value={nuevo.hora_entrada} onChange={e => setNuevo({ ...nuevo, hora_entrada: e.target.value })} required style={{ maxWidth: 120 }} />
+          <input type="time" className="form-control" value={nuevo.hora_salida} onChange={e => setNuevo({ ...nuevo, hora_salida: e.target.value })} required style={{ maxWidth: 120 }} />
+          <select className="form-select" value={nuevo.corregida} onChange={e => setNuevo({ ...nuevo, corregida: e.target.value })} style={{ maxWidth: 140 }}>
             <option value="NO">No corregida</option>
             <option value="SI">Corregida</option>
           </select>
-          <button type="submit">Registrar asistencia</button>
+          <button type="submit" className="btn btn-success">Registrar asistencia</button>
         </form>
       )}
 
       {/* Tabla de asistencias */}
-      <table border="1" cellPadding={8} style={{ width: '100%', background: 'white', color: 'black' }}>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Usuario</th>
-            <th>Fecha</th>
-            <th>Hora Entrada</th>
-            <th>Hora Salida</th>
-            <th>Corregida</th>
-            {usuario?.rol !== 'empleado' && <th>Acciones</th>}
-          </tr>
-        </thead>
-        <tbody>
-          {[...asistenciasFiltradas]
-            .sort(compararAsistencias)
-            .map(asist => (
-              <tr key={asist.id_asistencia}>
-                {editando === asist.id_asistencia ? (
-                  <>
-                    {/* Fila en modo edición */}
-                    <td>{asist.id_asistencia}</td>
-                    <td>
-                      <select value={editData.id_usuario} onChange={e => setEditData({ ...editData, id_usuario: e.target.value })}>
-                        {usuarios.map(u => (
-                          <option key={u.id_usuario} value={u.id_usuario}>{u.nombre_usuario}</option>
-                        ))}
-                      </select>
-                    </td>
-                    <td><input type="date" value={editData.fecha} onChange={e => setEditData({ ...editData, fecha: e.target.value })} /></td>
-                    <td><input type="time" value={editData.hora_entrada} onChange={e => setEditData({ ...editData, hora_entrada: e.target.value })} /></td>
-                    <td><input type="time" value={editData.hora_salida} onChange={e => setEditData({ ...editData, hora_salida: e.target.value })} /></td>
-                    <td>
-                      <select value={editData.corregida} onChange={e => setEditData({ ...editData, corregida: e.target.value })}>
-                        <option value="NO">No corregida</option>
-                        <option value="SI">Corregida</option>
-                      </select>
-                    </td>
-                    <td>
-                      <button onClick={() => handleGuardarEdicion(asist.id_asistencia)}>Guardar</button>
-                      <button onClick={handleCancelarEdicion}>Cancelar</button>
-                    </td>
-                  </>
-                ) : (
-                  <>
-                    {/* Fila normal */}
-                    <td>{asist.id_asistencia}</td>
-                    <td>{usuarios.find(u => u.id_usuario === asist.id_usuario)?.nombre_usuario || asist.id_usuario}</td>
-                    <td>{formatearFecha(asist.fecha)}</td>
-                    <td>{formatearHora(asist.hora_entrada)}</td>
-                    <td>{formatearHora(asist.hora_salida)}</td>
-                    <td>{asist.corregida}</td>
-                    {usuario?.rol !== 'empleado' && (
+      <div className="table-responsive">
+        <table className="table table-bordered table-striped table-lg w-100">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Usuario</th>
+              <th>Fecha</th>
+              <th>Hora Entrada</th>
+              <th>Hora Salida</th>
+              <th>Corregida</th>
+              {usuario?.rol !== 'empleado' && <th>Acciones</th>}
+            </tr>
+          </thead>
+          <tbody>
+            {[...asistenciasFiltradas]
+              .sort(compararAsistencias)
+              .map(asist => (
+                <tr key={asist.id_asistencia}>
+                  {editando === asist.id_asistencia ? (
+                    <>
+                      <td>{asist.id_asistencia}</td>
                       <td>
-                        <button onClick={() => handleEditar(asist)}>Editar</button>
-                        <button onClick={() => handleEliminar(asist.id_asistencia)}>Eliminar</button>
+                        <select className="form-select" value={editData.id_usuario} onChange={e => setEditData({ ...editData, id_usuario: e.target.value })}>
+                          {usuarios.map(u => (
+                            <option key={u.id_usuario} value={u.id_usuario}>{u.nombre_usuario}</option>
+                          ))}
+                        </select>
                       </td>
-                    )}
-                  </>
-                )}
-              </tr>
-            ))}
-        </tbody>
-      </table>
+                      <td><input type="date" className="form-control" value={editData.fecha} onChange={e => setEditData({ ...editData, fecha: e.target.value })} /></td>
+                      <td><input type="time" className="form-control" value={editData.hora_entrada} onChange={e => setEditData({ ...editData, hora_entrada: e.target.value })} /></td>
+                      <td><input type="time" className="form-control" value={editData.hora_salida} onChange={e => setEditData({ ...editData, hora_salida: e.target.value })} /></td>
+                      <td>
+                        <select className="form-select" value={editData.corregida} onChange={e => setEditData({ ...editData, corregida: e.target.value })}>
+                          <option value="NO">No corregida</option>
+                          <option value="SI">Corregida</option>
+                        </select>
+                      </td>
+                      <td>
+                        <button className="btn btn-primary btn-sm me-1" onClick={() => handleGuardarEdicion(asist.id_asistencia)}>Guardar</button>
+                        <button className="btn btn-secondary btn-sm" onClick={handleCancelarEdicion}>Cancelar</button>
+                      </td>
+                    </>
+                  ) : (
+                    <>
+                      <td>{asist.id_asistencia}</td>
+                      <td>{usuarios.find(u => u.id_usuario === asist.id_usuario)?.nombre_usuario || asist.id_usuario}</td>
+                      <td>{formatearFecha(asist.fecha)}</td>
+                      <td>{formatearHora(asist.hora_entrada)}</td>
+                      <td>{formatearHora(asist.hora_salida)}</td>
+                      <td>{asist.corregida}</td>
+                      {usuario?.rol !== 'empleado' && (
+                        <td>
+                          <button className="btn btn-warning btn-sm me-1" onClick={() => handleEditar(asist)}>Editar</button>
+                          <button className="btn btn-danger btn-sm" onClick={() => handleEliminar(asist.id_asistencia)}>Eliminar</button>
+                        </td>
+                      )}
+                    </>
+                  )}
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

@@ -106,98 +106,114 @@ const UsuariosContainer = () => {
   );
 
   return (
-    <div>
-      <h2>Gestión de Usuarios</h2>
-      {error && <p style={{color: 'red'}}>{error}</p>}
+    <div className="container-fluid mt-4 px-4">
+      <h2 className="mb-3 display-5">Gestión de Usuarios</h2>
+      {error && <div className="alert alert-danger">{error}</div>}
 
       {/* Barra de filtros */}
-      <div style={{ display: 'flex', gap: 12, marginBottom: 16, alignItems: 'center', flexWrap: 'wrap' }}>
-        <input
-          type="text"
-          placeholder="Buscar por nombre"
-          value={filtroNombre}
-          onChange={e => setFiltroNombre(e.target.value)}
-          style={{ width: 180 }}
-        />
-        <input
-          type="text"
-          placeholder="Buscar por correo"
-          value={filtroCorreo}
-          onChange={e => setFiltroCorreo(e.target.value)}
-          style={{ width: 180 }}
-        />
-        <select value={filtroRol} onChange={e => setFiltroRol(e.target.value)}>
-          <option value="">Todos los roles</option>
-          <option value="empleado">Empleado</option>
-          <option value="encargado">Encargado</option>
-          <option value="admin">Admin</option>
-        </select>
-        <button onClick={limpiarFiltros}>Limpiar filtros</button>
+      <div className="row g-2 mb-3 align-items-end flex-wrap">
+        <div className="col-auto">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Buscar por nombre"
+            value={filtroNombre}
+            onChange={e => setFiltroNombre(e.target.value)}
+            style={{ width: 180 }}
+          />
+        </div>
+        <div className="col-auto">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Buscar por correo"
+            value={filtroCorreo}
+            onChange={e => setFiltroCorreo(e.target.value)}
+            style={{ width: 180 }}
+          />
+        </div>
+        <div className="col-auto">
+          <select className="form-select" value={filtroRol} onChange={e => setFiltroRol(e.target.value)}>
+            <option value="">Todos los roles</option>
+            <option value="empleado">Empleado</option>
+            <option value="encargado">Encargado</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+        <div className="col-auto">
+          <button className="btn btn-secondary" onClick={limpiarFiltros}>Limpiar filtros</button>
+        </div>
       </div>
 
-      <form onSubmit={handleCrear} style={{marginBottom: 20, display: 'flex', gap: 8, flexWrap: 'wrap'}}>
-        <input type="text" placeholder="Nombre de usuario" value={nuevo.nombre_usuario} onChange={e => setNuevo({ ...nuevo, nombre_usuario: e.target.value })} required />
-        <input type="email" placeholder="Correo" value={nuevo.correo} onChange={e => setNuevo({ ...nuevo, correo: e.target.value })} required />
-        <input type="password" placeholder="Contraseña" value={nuevo.contrasena} onChange={e => setNuevo({ ...nuevo, contrasena: e.target.value })} required />
-        <select value={nuevo.rol} onChange={e => setNuevo({ ...nuevo, rol: e.target.value })}>
+      <form
+        onSubmit={handleCrear}
+        className="p-4 bg-white rounded border mb-4 d-flex flex-wrap gap-2 align-items-end"
+        style={{ maxWidth: 1200 }}
+      >
+        <input type="text" className="form-control" placeholder="Nombre de usuario" value={nuevo.nombre_usuario} onChange={e => setNuevo({ ...nuevo, nombre_usuario: e.target.value })} required style={{ maxWidth: 180 }} />
+        <input type="email" className="form-control" placeholder="Correo" value={nuevo.correo} onChange={e => setNuevo({ ...nuevo, correo: e.target.value })} required style={{ maxWidth: 180 }} />
+        <input type="password" className="form-control" placeholder="Contraseña" value={nuevo.contrasena} onChange={e => setNuevo({ ...nuevo, contrasena: e.target.value })} required style={{ maxWidth: 160 }} />
+        <select className="form-select" value={nuevo.rol} onChange={e => setNuevo({ ...nuevo, rol: e.target.value })} style={{ maxWidth: 140 }}>
           <option value="empleado">Empleado</option>
           <option value="encargado">Encargado</option>
           <option value="admin">Admin</option>
         </select>
-        <button type="submit">Crear usuario</button>
+        <button type="submit" className="btn btn-success">Crear usuario</button>
       </form>
 
-      <table border="1" cellPadding={8} style={{width: '100%', background: 'white', color: 'black'}}>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nombre de usuario</th>
-            <th>Correo</th>
-            <th>Contraseña</th>
-            <th>Rol</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {usuariosFiltrados.map(user => (
-            <tr key={user.id_usuario}>
-              {editando === user.id_usuario ? (
-                <>
-                  <td>{user.id_usuario}</td>
-                  <td><input type="text" value={editData.nombre_usuario} onChange={e => setEditData({ ...editData, nombre_usuario: e.target.value })} /></td>
-                  <td><input type="email" value={editData.correo} onChange={e => setEditData({ ...editData, correo: e.target.value })} /></td>
-                  <td><input type="password" value={editData.contrasena} onChange={e => setEditData({ ...editData, contrasena: e.target.value })} /></td>
-                  <td>
-                    <select value={editData.rol} onChange={e => setEditData({ ...editData, rol: e.target.value })}>
-                      <option value="empleado">Empleado</option>
-                      <option value="encargado">Encargado</option>
-                      <option value="admin">Admin</option>
-                    </select>
-                  </td>
-                  <td>
-                    <button onClick={() => handleGuardarEdicion(user.id_usuario)}>Guardar</button>
-                    <button onClick={handleCancelarEdicion}>Cancelar</button>
-                  </td>
-                </>
-              ) : (
-                <>
-                  <td>{user.id_usuario}</td>
-                  <td>{user.nombre_usuario}</td>
-                  <td>{user.correo}</td>
-                  <td>••••••</td>
-                  <td>{user.rol}</td>
-                  <td>
-                    <button onClick={() => verVentas(user.id_usuario)}>Ventas</button>
-                    <button onClick={() => verAsistencias(user.id_usuario)}>Asistencias</button>
-                    <button onClick={() => handleEditar(user)}>Editar</button>
-                    <button onClick={() => handleEliminar(user.id_usuario)}>Eliminar</button>
-                  </td>
-                </>
-              )}
+      <div className="table-responsive">
+        <table className="table table-bordered table-striped table-lg w-100">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre de usuario</th>
+              <th>Correo</th>
+              <th>Contraseña</th>
+              <th>Rol</th>
+              <th>Acciones</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {usuariosFiltrados.map(user => (
+              <tr key={user.id_usuario}>
+                {editando === user.id_usuario ? (
+                  <>
+                    <td>{user.id_usuario}</td>
+                    <td><input type="text" className="form-control" value={editData.nombre_usuario} onChange={e => setEditData({ ...editData, nombre_usuario: e.target.value })} /></td>
+                    <td><input type="email" className="form-control" value={editData.correo} onChange={e => setEditData({ ...editData, correo: e.target.value })} /></td>
+                    <td><input type="password" className="form-control" value={editData.contrasena} onChange={e => setEditData({ ...editData, contrasena: e.target.value })} /></td>
+                    <td>
+                      <select className="form-select" value={editData.rol} onChange={e => setEditData({ ...editData, rol: e.target.value })}>
+                        <option value="empleado">Empleado</option>
+                        <option value="encargado">Encargado</option>
+                        <option value="admin">Admin</option>
+                      </select>
+                    </td>
+                    <td>
+                      <button className="btn btn-primary btn-sm me-1" onClick={() => handleGuardarEdicion(user.id_usuario)}>Guardar</button>
+                      <button className="btn btn-secondary btn-sm" onClick={handleCancelarEdicion}>Cancelar</button>
+                    </td>
+                  </>
+                ) : (
+                  <>
+                    <td>{user.id_usuario}</td>
+                    <td>{user.nombre_usuario}</td>
+                    <td>{user.correo}</td>
+                    <td>••••••</td>
+                    <td>{user.rol}</td>
+                    <td>
+                      <button className="btn btn-info btn-sm me-1" onClick={() => verVentas(user.id_usuario)}>Ventas</button>
+                      <button className="btn btn-secondary btn-sm me-1" onClick={() => verAsistencias(user.id_usuario)}>Asistencias</button>
+                      <button className="btn btn-warning btn-sm me-1" onClick={() => handleEditar(user)}>Editar</button>
+                      <button className="btn btn-danger btn-sm" onClick={() => handleEliminar(user.id_usuario)}>Eliminar</button>
+                    </td>
+                  </>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
