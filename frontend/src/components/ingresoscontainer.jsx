@@ -119,107 +119,121 @@ const IngresosContainer = () => {
 );
 
   return (
-    <div>
-      <h2>Página de Ingresos</h2>
-      {error && <p style={{color: 'red'}}>{error}</p>}
+    <div className="container-fluid mt-4 px-4">
+      <h2 className="mb-3 display-5">Gestión de Ingresos</h2>
+      {error && <div className="alert alert-danger">{error}</div>}
 
       {/* Barra de filtros */}
-      <div style={{ marginBottom: 16, display: 'flex', gap: 12, alignItems: 'center' }}>
-        <input
-          type="date"
-          value={filtroFecha}
-          onChange={e => setFiltroFecha(e.target.value)}
-        />
-        <select
-          value={filtroProveedor}
-          onChange={e => setFiltroProveedor(e.target.value)}
-        >
-          <option value="">Todos los proveedores</option>
-          {proveedores.map(pr => (
-            <option key={pr.id_proveedor} value={pr.id_proveedor}>{pr.nombre}</option>
-          ))}
-        </select>
-        <button onClick={() => { setFiltroFecha(''); setFiltroProveedor(''); }}>Limpiar filtros</button>
+      <div className="row g-2 mb-3 align-items-end flex-wrap">
+        <div className="col-auto">
+          <input
+            type="date"
+            className="form-control"
+            value={filtroFecha}
+            onChange={e => setFiltroFecha(e.target.value)}
+          />
+        </div>
+        <div className="col-auto">
+          <select
+            className="form-select"
+            value={filtroProveedor}
+            onChange={e => setFiltroProveedor(e.target.value)}
+          >
+            <option value="">Todos los proveedores</option>
+            {proveedores.map(pr => (
+              <option key={pr.id_proveedor} value={pr.id_proveedor}>{pr.nombre}</option>
+            ))}
+          </select>
+        </div>
+        <div className="col-auto">
+          <button className="btn btn-secondary" onClick={() => { setFiltroFecha(''); setFiltroProveedor(''); }}>Limpiar filtros</button>
+        </div>
       </div>
 
       {/* Formulario para crear ingreso */}
-      <form onSubmit={handleCrear} style={{marginBottom: 20, display: 'flex', gap: 8, flexWrap: 'wrap'}}>
-        <input type="date" value={nuevo.fecha} onChange={e => setNuevo({ ...nuevo, fecha: e.target.value })} required />
-        <select value={nuevo.id_producto} onChange={e => setNuevo({ ...nuevo, id_producto: e.target.value })} required>
+      <form
+        onSubmit={handleCrear}
+        className="p-4 bg-white rounded border mb-4 d-flex flex-wrap gap-2 align-items-end"
+        style={{ maxWidth: 1200 }}
+      >
+        <input type="date" className="form-control" value={nuevo.fecha} onChange={e => setNuevo({ ...nuevo, fecha: e.target.value })} required style={{ maxWidth: 140 }} />
+        <select className="form-select" value={nuevo.id_producto} onChange={e => setNuevo({ ...nuevo, id_producto: e.target.value })} required style={{ maxWidth: 180 }}>
           <option value="">Producto</option>
           {productos.map(p => (
             <option key={p.id_producto} value={p.id_producto}>{p.nombre}</option>
           ))}
         </select>
-        <select value={nuevo.id_proveedor} onChange={e => setNuevo({ ...nuevo, id_proveedor: e.target.value })} required>
+        <select className="form-select" value={nuevo.id_proveedor} onChange={e => setNuevo({ ...nuevo, id_proveedor: e.target.value })} required style={{ maxWidth: 180 }}>
           <option value="">Proveedor</option>
           {proveedores.map(pr => (
             <option key={pr.id_proveedor} value={pr.id_proveedor}>{pr.nombre}</option>
           ))}
         </select>
-        <input type="number" min={1} placeholder="Cantidad" value={nuevo.cantidad} onChange={e => setNuevo({ ...nuevo, cantidad: e.target.value })} required />
-        <input type="number" min={0} step="0.01" placeholder="Precio Unitario" value={nuevo.precio_unitario} onChange={e => setNuevo({ ...nuevo, precio_unitario: e.target.value })} required />
-        <button type="submit">Registrar ingreso</button>
+        <input type="number" className="form-control" min={1} placeholder="Cantidad" value={nuevo.cantidad} onChange={e => setNuevo({ ...nuevo, cantidad: e.target.value })} required style={{ maxWidth: 120 }} />
+        <input type="number" className="form-control" min={0} step="0.01" placeholder="Precio Unitario" value={nuevo.precio_unitario} onChange={e => setNuevo({ ...nuevo, precio_unitario: e.target.value })} required style={{ maxWidth: 140 }} />
+        <button type="submit" className="btn btn-success">Registrar ingreso</button>
       </form>
 
-      <table border="1" cellPadding={8} style={{ width: '100%', background: 'white', color: 'black' }}>
-        <thead>
-          <tr>
-            <th>Fecha</th>
-            <th>Producto</th>
-            <th>Proveedor</th>
-            <th>Cantidad</th>
-            <th>Precio Unitario</th>
-            <th>Subtotal</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {ingresosFiltrados.map(ing => (
-            <tr key={ing.id_ingreso}>
-              {editando === ing.id_ingreso ? (
-                <>
-                  <td><input type="date" value={editData.fecha} onChange={e => setEditData({ ...editData, fecha: e.target.value })} /></td>
-                  <td>
-                    <select value={editData.id_producto} onChange={e => setEditData({ ...editData, id_producto: e.target.value })}>
-                      {productos.map(p => (
-                        <option key={p.id_producto} value={p.id_producto}>{p.nombre}</option>
-                      ))}
-                    </select>
-                  </td>
-                  <td>
-                    <select value={editData.id_proveedor} onChange={e => setEditData({ ...editData, id_proveedor: e.target.value })}>
-                      {proveedores.map(pr => (
-                        <option key={pr.id_proveedor} value={pr.id_proveedor}>{pr.nombre}</option>
-                      ))}
-                    </select>
-                  </td>
-                  <td><input type="number" min={1} value={editData.cantidad} onChange={e => setEditData({ ...editData, cantidad: e.target.value })} /></td>
-                  <td><input type="number" min={0} step="0.01" value={editData.precio_unitario} onChange={e => setEditData({ ...editData, precio_unitario: e.target.value })} /></td>
-                  <td>${(editData.cantidad && editData.precio_unitario) ? (parseFloat(editData.cantidad) * parseFloat(editData.precio_unitario)).toFixed(2) : ''}</td>
-                  <td>
-                    <button onClick={() => handleGuardarEdicion(ing.id_ingreso)}>Guardar</button>
-                    <button onClick={handleCancelarEdicion}>Cancelar</button>
-                  </td>
-                </>
-              ) : (
-                <>
-                  <td>{formatearFecha(ing.fecha)}</td>
-                  <td>{ing.producto}</td>
-                  <td>{ing.proveedor}</td>
-                  <td>{ing.cantidad}</td>
-                  <td>${ing.precio_unitario}</td>
-                  <td>${ing.subtotal}</td>
-                  <td>
-                    <button onClick={() => handleEditar(ing)}>Editar</button>
-                    <button onClick={() => handleEliminar(ing.id_ingreso)}>Eliminar</button>
-                  </td>
-                </>
-              )}
+      <div className="table-responsive">
+        <table className="table table-bordered table-striped table-lg w-100">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Producto</th>
+              <th>Proveedor</th>
+              <th>Cantidad</th>
+              <th>Precio Unitario</th>
+              <th>Subtotal</th>
+              <th>Acciones</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {ingresosFiltrados.map(ing => (
+              <tr key={ing.id_ingreso}>
+                {editando === ing.id_ingreso ? (
+                  <>
+                    <td><input type="date" className="form-control" value={editData.fecha} onChange={e => setEditData({ ...editData, fecha: e.target.value })} /></td>
+                    <td>
+                      <select className="form-select" value={editData.id_producto} onChange={e => setEditData({ ...editData, id_producto: e.target.value })}>
+                        {productos.map(p => (
+                          <option key={p.id_producto} value={p.id_producto}>{p.nombre}</option>
+                        ))}
+                      </select>
+                    </td>
+                    <td>
+                      <select className="form-select" value={editData.id_proveedor} onChange={e => setEditData({ ...editData, id_proveedor: e.target.value })}>
+                        {proveedores.map(pr => (
+                          <option key={pr.id_proveedor} value={pr.id_proveedor}>{pr.nombre}</option>
+                        ))}
+                      </select>
+                    </td>
+                    <td><input type="number" className="form-control" min={1} value={editData.cantidad} onChange={e => setEditData({ ...editData, cantidad: e.target.value })} /></td>
+                    <td><input type="number" className="form-control" min={0} step="0.01" value={editData.precio_unitario} onChange={e => setEditData({ ...editData, precio_unitario: e.target.value })} /></td>
+                    <td>${(editData.cantidad && editData.precio_unitario) ? (parseFloat(editData.cantidad) * parseFloat(editData.precio_unitario)).toFixed(2) : ''}</td>
+                    <td>
+                      <button className="btn btn-primary btn-sm me-1" onClick={() => handleGuardarEdicion(ing.id_ingreso)}>Guardar</button>
+                      <button className="btn btn-secondary btn-sm" onClick={handleCancelarEdicion}>Cancelar</button>
+                    </td>
+                  </>
+                ) : (
+                  <>
+                    <td>{formatearFecha(ing.fecha)}</td>
+                    <td>{ing.producto}</td>
+                    <td>{ing.proveedor}</td>
+                    <td>{ing.cantidad}</td>
+                    <td>${ing.precio_unitario}</td>
+                    <td>${ing.subtotal}</td>
+                    <td>
+                      <button className="btn btn-warning btn-sm me-1" onClick={() => handleEditar(ing)}>Editar</button>
+                      <button className="btn btn-danger btn-sm" onClick={() => handleEliminar(ing.id_ingreso)}>Eliminar</button>
+                    </td>
+                  </>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

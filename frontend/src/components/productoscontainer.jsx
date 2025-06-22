@@ -180,12 +180,16 @@ const ProductosContainer = () => {
 
       {/* Solo admins/encargados pueden crear productos */}
       {usuario?.rol !== 'empleado' && (
-        <form onSubmit={handleCrear} style={{marginBottom: 20, display: 'flex', gap: 8, flexWrap: 'wrap', position: 'relative'}}>
-          <input type="text" placeholder="Nombre" value={nuevo.nombre} onChange={e => setNuevo({ ...nuevo, nombre: e.target.value })} required />
-          <input type="text" placeholder="Descripción" value={nuevo.descripcion} onChange={e => setNuevo({ ...nuevo, descripcion: e.target.value })} />
-          <input type="number" placeholder="Precio" value={nuevo.precio} onChange={e => setNuevo({ ...nuevo, precio: e.target.value })} required />
-          <input type="number" placeholder="Stock" value={nuevo.stock} onChange={e => setNuevo({ ...nuevo, stock: e.target.value })} required />
-          <select value={nuevo.id_categoria} onChange={e => setNuevo({ ...nuevo, id_categoria: e.target.value })} required>
+        <form
+          onSubmit={handleCrear}
+          className="p-4 bg-white rounded border mb-4 d-flex flex-wrap gap-2 align-items-end"
+          style={{ maxWidth: 1200 }}
+        >
+          <input type="text" className="form-control" placeholder="Nombre" value={nuevo.nombre} onChange={e => setNuevo({ ...nuevo, nombre: e.target.value })} required style={{ maxWidth: 160 }} />
+          <input type="text" className="form-control" placeholder="Descripción" value={nuevo.descripcion} onChange={e => setNuevo({ ...nuevo, descripcion: e.target.value })} style={{ maxWidth: 200 }} />
+          <input type="number" className="form-control" placeholder="Precio" value={nuevo.precio} onChange={e => setNuevo({ ...nuevo, precio: e.target.value })} required style={{ maxWidth: 120 }} />
+          <input type="number" className="form-control" placeholder="Stock" value={nuevo.stock} onChange={e => setNuevo({ ...nuevo, stock: e.target.value })} required style={{ maxWidth: 100 }} />
+          <select className="form-select" value={nuevo.id_categoria} onChange={e => setNuevo({ ...nuevo, id_categoria: e.target.value })} required style={{ maxWidth: 150 }}>
             <option value="">Categoría</option>
             {categorias.map(cat => (
               <option key={cat.id_categoria} value={cat.id_categoria}>{cat.nombre_categoria}</option>
@@ -197,9 +201,10 @@ const ProductosContainer = () => {
               <option key={mar.id_marca} value={mar.id_marca}>{mar.nombre_marca}</option>
             ))}
           </select>
-          <div style={{ position: 'relative' }}>
+          <div style={{ position: 'relative', maxWidth: 200, flex: 1 }}>
             <input
               type="text"
+              className="form-control"
               placeholder="URL Imagen"
               value={nuevo.imagen_url}
               onChange={e => setNuevo({ ...nuevo, imagen_url: e.target.value })}
@@ -217,7 +222,7 @@ const ProductosContainer = () => {
                 overflowY: 'auto',
                 zIndex: 10,
                 width: '100%',
-                color: '#222' // <-- Letra negra SOLO en la barra desplegable
+                color: '#222'
               }}>
                 {imagenesFiltradasNuevo.map(img => (
                   <li
@@ -231,112 +236,115 @@ const ProductosContainer = () => {
               </ul>
             )}
           </div>
-          <button type="submit">Crear producto</button>
+          <button type="submit" className="btn btn-success">Crear producto</button>
         </form>
       )}
 
-      <table className="table table-bordered table-striped table-lg w-100">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Categoría</th>
-            <th>Marca</th>
-            <th>Precio</th>
-            <th>Stock</th>
-            <th>Imagen</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {productosFiltrados.map(prod => (
-            <tr key={prod.id_producto}>
-              {editando === prod.id_producto ? (
-                usuario?.rol !== 'empleado' && (
+      <div className="table-responsive">
+        <table className="table table-bordered table-striped table-lg w-100">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Categoría</th>
+              <th>Marca</th>
+              <th>Precio</th>
+              <th>Stock</th>
+              <th>Imagen</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {productosFiltrados.map(prod => (
+              <tr key={prod.id_producto}>
+                {editando === prod.id_producto ? (
+                  usuario?.rol !== 'empleado' && (
+                    <>
+                      <td>{prod.id_producto}</td>
+                      <td><input type="text" className="form-control" value={editData.nombre} onChange={e => setEditData({ ...editData, nombre: e.target.value })} /></td>
+                      <td>
+                        <select className="form-select" value={editData.id_categoria} onChange={e => setEditData({ ...editData, id_categoria: e.target.value })} required>
+                          <option value="">Categoría</option>
+                          {categorias.map(cat => (
+                            <option key={cat.id_categoria} value={cat.id_categoria}>{cat.nombre_categoria}</option>
+                          ))}
+                        </select>
+                      </td>
+                      <td>
+                        <select className="form-select" value={editData.id_marca} onChange={e => setEditData({ ...editData, id_marca: e.target.value })} required>
+                          <option value="">Marca</option>
+                          {marcas.map(mar => (
+                            <option key={mar.id_marca} value={mar.id_marca}>{mar.nombre_marca}</option>
+                          ))}
+                        </select>
+                      </td>
+                      <td><input type="number" className="form-control" value={editData.precio} onChange={e => setEditData({ ...editData, precio: e.target.value })} /></td>
+                      <td><input type="number" className="form-control" value={editData.stock} onChange={e => setEditData({ ...editData, stock: e.target.value })} /></td>
+                      <td style={{ position: 'relative' }}>
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={editData.imagen_url}
+                          onChange={e => setEditData({ ...editData, imagen_url: e.target.value })}
+                          autoComplete="off"
+                        />
+                        {editData.imagen_url && imagenesFiltradasEdit.length > 0 && (
+                          <ul style={{
+                            position: 'absolute',
+                            background: '#fff',
+                            border: '1px solid #ccc',
+                            margin: 0,
+                            padding: 0,
+                            listStyle: 'none',
+                            maxHeight: 100,
+                            overflowY: 'auto',
+                            zIndex: 10,
+                            width: '100%'
+                          }}>
+                            {imagenesFiltradasEdit.map(img => (
+                              <li
+                                key={img}
+                                style={{ padding: 4, cursor: 'pointer' }}
+                                onClick={() => setEditData({ ...editData, imagen_url: img })}
+                              >
+                                {img}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </td>
+                      <td>
+                        <button className="btn btn-primary btn-sm me-1" onClick={() => handleGuardarEdicion(prod.id_producto)}>Guardar</button>
+                        <button className="btn btn-secondary btn-sm" onClick={handleCancelarEdicion}>Cancelar</button>
+                      </td>
+                    </>
+                  )
+                ) : (
                   <>
                     <td>{prod.id_producto}</td>
-                    <td><input type="text" className="form-control" value={editData.nombre} onChange={e => setEditData({ ...editData, nombre: e.target.value })} /></td>
+                    <td>{prod.nombre}</td>
+                    <td>{prod.nombre_categoria}</td>
+                    <td>{prod.nombre_marca}</td>
+                    <td>${prod.precio}</td>
+                    <td>{prod.stock}</td>
                     <td>
-                      <select className="form-select" value={editData.id_categoria} onChange={e => setEditData({ ...editData, id_categoria: e.target.value })} required>
-                        <option value="">Categoría</option>
-                        {categorias.map(cat => (
-                          <option key={cat.id_categoria} value={cat.id_categoria}>{cat.nombre_categoria}</option>
-                        ))}
-                      </select>
+                      {prod.imagen_url && <img src={prod.imagen_url} alt={prod.nombre} width={50} />}
                     </td>
                     <td>
-                      <select className="form-select" value={editData.id_marca} onChange={e => setEditData({ ...editData, id_marca: e.target.value })} required>
-                        <option value="">Marca</option>
-                        {marcas.map(mar => (
-                          <option key={mar.id_marca} value={mar.id_marca}>{mar.nombre_marca}</option>
-                        ))}
-                      </select>
-                    </td>
-                    <td><input type="number" value={editData.precio} onChange={e => setEditData({ ...editData, precio: e.target.value })} /></td>
-                    <td><input type="number" value={editData.stock} onChange={e => setEditData({ ...editData, stock: e.target.value })} /></td>
-                    <td style={{ position: 'relative' }}>
-                      <input
-                        type="text"
-                        value={editData.imagen_url}
-                        onChange={e => setEditData({ ...editData, imagen_url: e.target.value })}
-                        autoComplete="off"
-                      />
-                      {editData.imagen_url && imagenesFiltradasEdit.length > 0 && (
-                        <ul style={{
-                          position: 'absolute',
-                          background: '#fff',
-                          border: '1px solid #ccc',
-                          margin: 0,
-                          padding: 0,
-                          listStyle: 'none',
-                          maxHeight: 100,
-                          overflowY: 'auto',
-                          zIndex: 10,
-                          width: '100%'
-                        }}>
-                          {imagenesFiltradasEdit.map(img => (
-                            <li
-                              key={img}
-                              style={{ padding: 4, cursor: 'pointer' }}
-                              onClick={() => setEditData({ ...editData, imagen_url: img })}
-                            >
-                              {img}
-                            </li>
-                          ))}
-                        </ul>
+                      {usuario?.rol !== 'empleado' && (
+                        <>
+                          <button className="btn btn-warning btn-sm me-1" onClick={() => handleEditar(prod)}>Editar</button>
+                          <button className="btn btn-danger btn-sm" onClick={() => handleEliminar(prod.id_producto)}>Eliminar</button>
+                        </>
                       )}
                     </td>
-                    <td>
-                      <button className="btn btn-primary btn-sm me-1" onClick={() => handleGuardarEdicion(prod.id_producto)}>Guardar</button>
-                      <button className="btn btn-secondary btn-sm" onClick={handleCancelarEdicion}>Cancelar</button>
-                    </td>
                   </>
-                )
-              ) : (
-                <>
-                  <td>{prod.id_producto}</td>
-                  <td>{prod.nombre}</td>
-                  <td>{prod.nombre_categoria}</td>
-                  <td>{prod.nombre_marca}</td>
-                  <td>${prod.precio}</td>
-                  <td>{prod.stock}</td>
-                  <td>
-                    {prod.imagen_url && <img src={prod.imagen_url} alt={prod.nombre} width={50} />}
-                  </td>
-                  <td>
-                    {usuario?.rol !== 'empleado' && (
-                      <>
-                        <button className="btn btn-warning btn-sm me-1" onClick={() => handleEditar(prod)}>Editar</button>
-                        <button className="btn btn-danger btn-sm" onClick={() => handleEliminar(prod.id_producto)}>Eliminar</button>
-                      </>
-                    )}
-                  </td>
-                </>
-              )}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
