@@ -75,7 +75,8 @@ CREATE TABLE ingreso_stock (
 -- Tabla de ventas
 CREATE TABLE venta (
     id_venta INT AUTO_INCREMENT PRIMARY KEY,
-    fecha DATETIME NOT NULL,
+    fecha DATE NOT NULL,
+    hora TIME NOT NULL,
     total DECIMAL(10,2) NOT NULL,
     id_usuario INT,
     FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
