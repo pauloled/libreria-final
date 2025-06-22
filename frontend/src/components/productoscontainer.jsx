@@ -241,26 +241,48 @@ const ProductosContainer = () => {
       )}
 
       <div className="table-responsive">
-        <table className="table table-bordered table-striped table-lg w-100">
-          <thead>
+        <table className="table table-bordered table-striped table-lg w-100"
+          style={{
+            borderRadius: 12,
+            overflow: 'hidden',
+            background: '#fff',
+            boxShadow: '0 2px 12px rgba(60,60,100,0.07)'
+          }}
+        >
+          <thead style={{ background: '#f3f0fa' }}>
             <tr>
-              <th>ID</th>
-              <th>Nombre</th>
-              <th>Categoría</th>
-              <th>Marca</th>
-              <th>Precio</th>
-              <th>Stock</th>
-              <th>Imagen</th>
-              <th>Acciones</th>
+              <th style={{ verticalAlign: 'middle', textAlign: 'center' }}>ID</th>
+              <th style={{ verticalAlign: 'middle' }}>Nombre</th>
+              <th style={{ verticalAlign: 'middle' }}>Categoría</th>
+              <th style={{ verticalAlign: 'middle' }}>Marca</th>
+              <th style={{ verticalAlign: 'middle' }}>Precio</th>
+              <th style={{ verticalAlign: 'middle' }}>Stock</th>
+              <th style={{ verticalAlign: 'middle' }}>Imagen</th>
+              <th style={{ verticalAlign: 'middle' }}>Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {productosFiltrados.map(prod => (
-              <tr key={prod.id_producto}>
+            {productosFiltrados.length === 0 && (
+              <tr>
+                <td colSpan={8} className="text-center text-muted py-4">
+                  No hay productos para mostrar.
+                </td>
+              </tr>
+            )}
+            {productosFiltrados.map((prod, idx) => (
+              <tr
+                key={prod.id_producto}
+                style={{
+                  background: idx % 2 === 0 ? '#f8f7fc' : '#fff',
+                  transition: 'background 0.2s'
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = '#e9e4f5'}
+                onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 0 ? '#f8f7fc' : '#fff'}
+              >
                 {editando === prod.id_producto ? (
                   usuario?.rol !== 'empleado' && (
                     <>
-                      <td>{prod.id_producto}</td>
+                      <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>{prod.id_producto}</td>
                       <td><input type="text" className="form-control" value={editData.nombre} onChange={e => setEditData({ ...editData, nombre: e.target.value })} /></td>
                       <td>
                         <select className="form-select" value={editData.id_categoria} onChange={e => setEditData({ ...editData, id_categoria: e.target.value })} required>
@@ -321,16 +343,24 @@ const ProductosContainer = () => {
                   )
                 ) : (
                   <>
-                    <td>{prod.id_producto}</td>
-                    <td>{prod.nombre}</td>
-                    <td>{prod.nombre_categoria}</td>
-                    <td>{prod.nombre_marca}</td>
-                    <td>${prod.precio}</td>
-                    <td>{prod.stock}</td>
-                    <td>
-                      {prod.imagen_url && <img src={prod.imagen_url} alt={prod.nombre} width={50} />}
+                    <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>{prod.id_producto}</td>
+                    <td style={{ verticalAlign: 'middle' }}>{prod.nombre}</td>
+                    <td style={{ verticalAlign: 'middle' }}>{prod.nombre_categoria}</td>
+                    <td style={{ verticalAlign: 'middle' }}>{prod.nombre_marca}</td>
+                    <td style={{ verticalAlign: 'middle' }}>${prod.precio}</td>
+                    <td style={{ verticalAlign: 'middle' }}>{prod.stock}</td>
+                    <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>
+                      {prod.imagen_url && (
+                        <img
+                          src={prod.imagen_url}
+                          alt={prod.nombre}
+                          width={38}
+                          height={38}
+                          style={{ borderRadius: 6, objectFit: 'cover', border: '1px solid #eee', background: '#fafafa' }}
+                        />
+                      )}
                     </td>
-                    <td>
+                    <td style={{ verticalAlign: 'middle' }}>
                       {usuario?.rol !== 'empleado' && (
                         <>
                           <button className="btn btn-warning btn-sm me-1" onClick={() => handleEditar(prod)}>Editar</button>
