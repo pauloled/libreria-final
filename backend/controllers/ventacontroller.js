@@ -114,12 +114,16 @@ exports.deleteVenta = (req, res) => {
         );
         Promise.all(queries)
             .then(() => {
-                // 3. Eliminar detalles y venta
-                db.query('DELETE FROM detalle_venta WHERE id_venta=?', [id], (err3) => {
-                    if (err3) return res.status(500).json({ error: err3 });
-                    db.query('DELETE FROM venta WHERE id_venta=?', [id], (err4) => {
-                        if (err4) return res.status(500).json({ error: err4 });
-                        res.json({ message: 'Venta eliminada y stock repuesto' });
+                // 3. Eliminar métodos de pago
+                db.query('DELETE FROM metodo_pago WHERE id_venta=?', [id], (errMp) => {
+                    if (errMp) return res.status(500).json({ error: errMp });
+                    // 4. Eliminar detalles y venta
+                    db.query('DELETE FROM detalle_venta WHERE id_venta=?', [id], (err3) => {
+                        if (err3) return res.status(500).json({ error: err3 });
+                        db.query('DELETE FROM venta WHERE id_venta=?', [id], (err4) => {
+                            if (err4) return res.status(500).json({ error: err4 });
+                            res.json({ message: 'Venta eliminada y stock repuesto' });
+                        });
                     });
                 });
             })
