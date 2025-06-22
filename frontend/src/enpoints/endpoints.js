@@ -26,3 +26,6 @@ export const CATEGORIAS = `${API_BASE}/productos/categorias`;
 
 // Marcas
 export const MARCAS = `${API_BASE}/productos/marcas`;
+
+// Imágenes
+export const IMAGENES = `${API_BASE}/imagenes`;
