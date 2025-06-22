@@ -1,4 +1,4 @@
-# Librería " " - Sistema de Gestión Interna
+# Librería Escolarium - Sistema de Gestión Interna
 ## Objetivo del Proyecto
 Este sistema web fue desarrollado para gestionar las operaciones internas de una librería. Permite controlar productos, ventas, usuarios, asistencias e ingresos de stock, diferenciando accesos y funcionalidades según el rol del usuario (admin, encargado, empleado).
 El objetivo es brindar una solución digital simple, clara y adaptable para la administración diaria de una librería, facilitando la gestión y el registro de actividades clave.
@@ -34,7 +34,7 @@ El objetivo es brindar una solución digital simple, clara y adaptable para la a
 Las aplicaciones necesarias para ejecutar correctamente la aplicación son:
 -  **Visual Studio Code:** o otro editor de código, necesario para ejecutar el código.
 -  **MySQL:** necesario para almacenar y gestionar los datos del sistema en la base de datos.
--  **XAMPP:** opcional, pero práctico.
+-  **XAMPP:** opcional, dependiendo de la instalación de tu MySQL.
 -  **Navegador web:** se recomienda usar chrome, firefox o edge, necesario para abrir la pagina que ejecuta el sistema de gestión.
 
 ---
@@ -101,11 +101,12 @@ npm run dev
 | Módulo         | Funciones disponibles                                                                |
 |----------------|--------------------------------------------------------------------------------------|
 | **Login**      | Acceso seguro y distinción de roles (admin, encargado, empleado)                     |
-| **Productos**  | Visualización, alta, edición y baja de productos (según rol)                         |
-| **Ventas**     | Registro, listado y filtrado de ventas                                               |
-| **Usuarios**   | Alta, edición, baja y asignación de roles                                            |
-| **Asistencias**| Registro y corrección de asistencias, filtrado por usuario y fecha                   |
-| **Ingresos**   | Registro de ingresos de stock, edición y eliminación                                 |
+| **Productos**  | Visualización, filtrado, alta, edición y baja de productos (según rol)               |
+| **Ventas**     | Registro, listado y filtrado de ventas  (segun rol)                                  |
+| **Usuarios**   | Listado, alta, edición, baja y asignación de roles (admin)                           |
+| **Asistencias** | Registro y corrección de asistencias, filtrado por usuario y fecha (segun rol)      |
+| **Ingresos**   | Registro de ingresos de stock, filtrado edición y eliminación (admin y encargado)    |
+| **Proveedores** | Registro, listado, alta, edición y eliminación de proveedores (admin y encargado)   |
 | **Paneles Home** | Panel de inicio personalizado según el rol con accesos rápidos a los módulos clave |
 
 ---
@@ -134,8 +135,8 @@ frontend/
 ---
 
 ## Notas
-- Este proyecto es una base académica y puede ser ampliado con más validaciones, seguridad y funcionalidades.
-- Si tiene dudas sobre la estructura o el uso, revisa los archivos README y los comentarios en el código.
+- Este proyecto puede ser ampliado con más validaciones, seguridad y funcionalidades.
+- Si tiene dudas sobre la estructura o el uso, revisar los comentarios en el código.
 
 ---
 
