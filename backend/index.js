@@ -7,6 +7,7 @@ const ventaRoutes = require('./router/ventaroutes');
 const asistenciaRoutes = require('./router/asistenciaroutes');
 const ingresoRoutes = require('./router/ingresoroutes');
 const proveedorRoutes = require('./router/proveedorroutes');
+const imagenesRoutes = require('./router/imagenesroutes');
 
 const app = express();
 app.use(cors());
@@ -20,6 +21,7 @@ app.use('/api/asistencias', asistenciaRoutes);
 app.use('/api/ingresos', ingresoRoutes);
 app.use('/api/proveedores', proveedorRoutes);
 app.use('/api/auth', authRoutes); // Ruta para login
+app.use('/api/imagenes', imagenesRoutes);
 
 app.listen(3001, () => {
     console.log('Servidor backend en puerto 3001');

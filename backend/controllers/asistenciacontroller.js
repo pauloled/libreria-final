@@ -30,7 +30,7 @@ exports.createAsistencia = (req, res) => {
             id_usuario,
             fecha,
             hora_entrada,
-            hora_salida ? hora_salida : null, // Guarda NULL si es null, undefined o string vacío
+            hora_salida ? hora_salida : null, // Guarda NULL si no hay hora_salida
             corregida
         ],
         (err, result) => {
@@ -47,7 +47,7 @@ exports.updateAsistencia = (req, res) => {
         'UPDATE asistencia SET hora_entrada=?, hora_salida=?, corregida=? WHERE id_asistencia=?',
         [
             hora_entrada,
-            hora_salida ? hora_salida : null, // Guarda NULL si es null, undefined o string vacío
+            hora_salida ? hora_salida : null,
             corregida,
             id
         ],

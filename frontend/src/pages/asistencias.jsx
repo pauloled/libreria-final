@@ -45,7 +45,6 @@ const Asistencias = () => {
   useEffect(() => {
     cargarAsistencias();
     axios.get(USUARIOS).then(res => setUsuarios(res.data));
-    // Si es empleado, filtra por su usuario
     if (usuario?.rol === 'empleado') {
       setFiltros(f => ({ ...f, usuario: usuario.id_usuario }));
     }
@@ -67,7 +66,6 @@ const Asistencias = () => {
     setFiltros({ ...filtros, [e.target.name]: e.target.value });
   };
 
-  // Limpiar filtros
   const limpiarFiltros = () => {
     if (usuario?.rol === 'empleado') {
       setFiltros({ fecha: '', usuario: usuario.id_usuario });
@@ -129,22 +127,32 @@ const Asistencias = () => {
     setEditData({});
   };
 
-  // --- BLOQUE DE INGRESO/SALIDA PARA EL USUARIO LOGUEADO ---
+  // --------- ASISTENCIA PENDIENTE Y BOTONES ---------
   const hoy = new Date().toISOString().slice(0,10);
+  // Busca la asistencia pendiente del usuario actual para hoy
   const asistenciaPendiente = asistencias.find(a =>
     a.id_usuario === usuario?.id_usuario &&
     a.fecha === hoy &&
     !a.hora_salida
   );
 
+  // Registrar ingreso: si ya hay pendiente, no hace nada
   const handleIngreso = async () => {
-    const ahora = new Date();
-    const fecha = ahora.toISOString().slice(0,10);
-    const hora_entrada = ahora.toTimeString().slice(0,5);
+    setError('');
+    // Buscar asistencia pendiente actualizada desde el backend
     try {
+      const hoy = new Date().toISOString().slice(0,10);
+      const res = await axios.get(`${ASISTENCIAS}?usuario=${usuario.id_usuario}&fecha=${hoy}`);
+      const pendiente = res.data.find(a => !a.hora_salida);
+      if (pendiente) {
+        setError('Ya tienes una asistencia pendiente de salida para hoy.');
+        return;
+      }
+      const ahora = new Date();
+      const hora_entrada = ahora.toTimeString().slice(0,5);
       await axios.post(ASISTENCIAS, {
         id_usuario: usuario.id_usuario,
-        fecha,
+        fecha: hoy,
         hora_entrada,
         hora_salida: null,
         corregida: 'NO'
@@ -155,12 +163,22 @@ const Asistencias = () => {
     }
   };
 
+  // Registrar salida: solo si hay pendiente
   const handleSalida = async () => {
-    const ahora = new Date();
-    const hora_salida = ahora.toTimeString().slice(0,5);
+    setError('');
+    // Buscar la asistencia pendiente actualizada desde el backend
     try {
-      await axios.put(`${ASISTENCIAS}/${asistenciaPendiente.id_asistencia}`, {
-        ...asistenciaPendiente,
+      const hoy = new Date().toISOString().slice(0,10);
+      const res = await axios.get(`${ASISTENCIAS}?usuario=${usuario.id_usuario}&fecha=${hoy}`);
+      const pendiente = res.data.find(a => !a.hora_salida);
+      if (!pendiente) {
+        setError('No tienes una asistencia pendiente de salida.');
+        return;
+      }
+      const ahora = new Date();
+      const hora_salida = ahora.toTimeString().slice(0,5);
+      await axios.put(`${ASISTENCIAS}/${pendiente.id_asistencia}`, {
+        ...pendiente,
         hora_salida,
         corregida: 'NO'
       });
@@ -170,7 +188,6 @@ const Asistencias = () => {
     }
   };
 
-  // Solo mostrar asistencias propias si es empleado
   const asistenciasFiltradas = usuario?.rol === 'empleado'
     ? asistencias.filter(a => a.id_usuario === usuario.id_usuario)
     : asistencias;
@@ -180,10 +197,8 @@ const Asistencias = () => {
       <h2>Gestión de Asistencias</h2>
       {error && <p style={{color: 'red'}}>{error}</p>}
 
-      {/* Filtros */}
       <div style={{ marginBottom: 16 }}>
         <input type="date" name="fecha" value={filtros.fecha} onChange={handleFiltro} />
-        {/* Solo admins/encargados pueden filtrar por usuario */}
         {usuario?.rol !== 'empleado' && (
           <select name="usuario" value={filtros.usuario} onChange={handleFiltro}>
             <option value="">Todos los usuarios</option>
@@ -195,23 +210,41 @@ const Asistencias = () => {
         <button onClick={limpiarFiltros} style={{ marginLeft: 8 }}>Limpiar filtros</button>
       </div>
 
-      {/* Botones de ingreso/salida para el usuario logueado */}
+      {/* Bloque fijo de asistencia pendiente y botones */}
       {usuario && (
-        <div style={{ marginBottom: 16 }}>
-          {!asistenciaPendiente ? (
-            <button onClick={handleIngreso}>Registrar Ingreso</button>
-          ) : (
-            <button onClick={handleSalida}>Registrar Salida</button>
-          )}
-          {asistenciaPendiente && (
-            <div style={{ color: 'orange', marginTop: 8 }}>
-              Asistencia pendiente: {asistenciaPendiente.fecha} - Ingreso: {formatearHora(asistenciaPendiente.hora_entrada)}
-            </div>
-          )}
+        <div style={{ 
+          marginBottom: 16, 
+          border: asistenciaPendiente ? '2px solid orange' : '1px solid #ccc', 
+          padding: 12, 
+          borderRadius: 8, 
+          background: asistenciaPendiente ? '#fffbe6' : '#f9f9f9', 
+          color: asistenciaPendiente ? '#b36b00' : '#333' 
+        }}>
+          <strong>
+            {asistenciaPendiente && asistenciaPendiente.hora_entrada && !asistenciaPendiente.hora_salida
+              ? '¡Tienes una asistencia pendiente!'
+              : 'No tienes asistencia pendiente hoy.'}
+          </strong>
+          <div>Fecha: {hoy}</div>
+          <div>Hora de Ingreso: {asistenciaPendiente && asistenciaPendiente.hora_entrada ? formatearHora(asistenciaPendiente.hora_entrada) : '---'}</div>
+          <div>Hora de Salida: {asistenciaPendiente && asistenciaPendiente.hora_salida ? formatearHora(asistenciaPendiente.hora_salida) : '---'}</div>
+          <div style={{marginTop: 8}}>
+            <button
+              onClick={handleIngreso}
+              disabled={!!(asistenciaPendiente && asistenciaPendiente.hora_entrada && !asistenciaPendiente.hora_salida)}
+              style={{ marginRight: 8 }}
+            >
+              Registrar Ingreso
+            </button>
+            <button
+              onClick={handleSalida}
+            >
+              Registrar Salida
+            </button>
+          </div>
         </div>
       )}
 
-      {/* Solo admins/encargados pueden crear asistencias para otros */}
       {usuario?.rol !== 'empleado' && (
         <form onSubmit={handleCrear} style={{ marginBottom: 20, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           <select value={nuevo.id_usuario} onChange={e => setNuevo({ ...nuevo, id_usuario: e.target.value })} required>
@@ -231,7 +264,6 @@ const Asistencias = () => {
         </form>
       )}
 
-      {/* Tabla de asistencias */}
       <table border="1" cellPadding={8} style={{ width: '100%', background: 'white', color: 'black' }}>
         <thead>
           <tr>
@@ -241,20 +273,15 @@ const Asistencias = () => {
             <th>Hora Entrada</th>
             <th>Hora Salida</th>
             <th>Corregida</th>
-            {/* Solo admins/encargados pueden editar/eliminar */}
             {usuario?.rol !== 'empleado' && <th>Acciones</th>}
           </tr>
         </thead>
         <tbody>
           {[...asistenciasFiltradas]
             .sort(compararAsistencias)
-            .filter(asist =>
-              !(usuario && asist.id_usuario === usuario.id_usuario && asist.fecha === hoy && !asist.hora_salida)
-            )
             .map(asist => (
-            <tr key={asist.id_asistencia}>
-              {editando === asist.id_asistencia ? (
-                usuario?.rol !== 'empleado' && (
+              <tr key={asist.id_asistencia}>
+                {editando === asist.id_asistencia ? (
                   <>
                     <td>{asist.id_asistencia}</td>
                     <td>
@@ -278,29 +305,28 @@ const Asistencias = () => {
                       <button onClick={handleCancelarEdicion}>Cancelar</button>
                     </td>
                   </>
-                )
-              ) : (
-                <>
-                  <td>{asist.id_asistencia}</td>
-                  <td>{usuarios.find(u => u.id_usuario === asist.id_usuario)?.nombre_usuario || asist.id_usuario}</td>
-                  <td>{formatearFecha(asist.fecha)}</td>
-                  <td>{formatearHora(asist.hora_entrada)}</td>
-                  <td>{formatearHora(asist.hora_salida)}</td>
-                  <td>{asist.corregida === 'SI' ? 'SI' : ''}</td>
-                  {usuario?.rol !== 'empleado' && (
-                    <td>
-                      <button onClick={() => handleEditar(asist)}>Editar</button>
-                      <button onClick={() => handleEliminar(asist.id_asistencia)}>Eliminar</button>
-                    </td>
-                  )}
-                </>
-              )}
-            </tr>
-          ))}
+                ) : (
+                  <>
+                    <td>{asist.id_asistencia}</td>
+                    <td>{usuarios.find(u => u.id_usuario === asist.id_usuario)?.nombre_usuario || asist.id_usuario}</td>
+                    <td>{formatearFecha(asist.fecha)}</td>
+                    <td>{formatearHora(asist.hora_entrada)}</td>
+                    <td>{formatearHora(asist.hora_salida)}</td>
+                    <td>{asist.corregida}</td>
+                    {usuario?.rol !== 'empleado' && (
+                      <td>
+                        <button onClick={() => handleEditar(asist)}>Editar</button>
+                        <button onClick={() => handleEliminar(asist.id_asistencia)}>Eliminar</button>
+                      </td>
+                    )}
+                  </>
+                )}
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>
   );
 };
 
-export default Asistencias;
+export default Asistencias;  

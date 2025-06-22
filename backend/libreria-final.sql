@@ -45,8 +45,8 @@ CREATE TABLE asistencia (
     id_asistencia INT AUTO_INCREMENT PRIMARY KEY,
     id_usuario INT,
     fecha DATE NOT NULL,
-    hora_entrada TIME,
-    hora_salida TIME,
+    hora_entrada TIME NOT NULL,
+    hora_salida TIME DEFAULT NULL,
     corregida ENUM('SI', 'NO') DEFAULT 'NO',
     FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
 );
