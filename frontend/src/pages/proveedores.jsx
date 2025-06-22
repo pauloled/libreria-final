@@ -79,44 +79,55 @@ const Proveedores = () => {
   );
 
   return (
-    <div>
-      <h2>Gestión de Proveedores</h2>
-      {error && <p style={{color: 'red'}}>{error}</p>}
+    <div className="container-fluid mt-4 px-4">
+      <h2 className="mb-3 display-5">Gestión de Proveedores</h2>
+      {error && <div className="alert alert-danger">{error}</div>}
 
       {/* Barra de filtros */}
-      <div style={{ display: 'flex', gap: 12, marginBottom: 16, alignItems: 'center', flexWrap: 'wrap' }}>
-        <input
-          type="text"
-          placeholder="Buscar por nombre"
-          value={filtroNombre}
-          onChange={e => setFiltroNombre(e.target.value)}
-          style={{ width: 160 }}
-        />
-        <input
-          type="text"
-          placeholder="Buscar por email"
-          value={filtroEmail}
-          onChange={e => setFiltroEmail(e.target.value)}
-          style={{ width: 160 }}
-        />
-        <input
-          type="text"
-          placeholder="Buscar por teléfono"
-          value={filtroTelefono}
-          onChange={e => setFiltroTelefono(e.target.value)}
-          style={{ width: 140 }}
-        />
-        <button onClick={limpiarFiltros}>Limpiar filtros</button>
+      <div className="row g-2 mb-3 align-items-end flex-wrap">
+        <div className="col-auto">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Buscar por nombre"
+            value={filtroNombre}
+            onChange={e => setFiltroNombre(e.target.value)}
+            style={{ width: 160 }}
+          />
+        </div>
+        <div className="col-auto">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Buscar por email"
+            value={filtroEmail}
+            onChange={e => setFiltroEmail(e.target.value)}
+            style={{ width: 160 }}
+          />
+        </div>
+        <div className="col-auto">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Buscar por teléfono"
+            value={filtroTelefono}
+            onChange={e => setFiltroTelefono(e.target.value)}
+            style={{ width: 140 }}
+          />
+        </div>
+        <div className="col-auto">
+          <button className="btn btn-secondary" onClick={limpiarFiltros}>Limpiar filtros</button>
+        </div>
       </div>
 
-      <form onSubmit={handleCrear} style={{marginBottom: 20, display: 'flex', gap: 8, flexWrap: 'wrap'}}>
-        <input type="text" placeholder="Nombre" value={nuevo.nombre} onChange={e => setNuevo({ ...nuevo, nombre: e.target.value })} required />
-        <input type="email" placeholder="Email" value={nuevo.email} onChange={e => setNuevo({ ...nuevo, email: e.target.value })} />
-        <input type="text" placeholder="Teléfono" value={nuevo.telefono} onChange={e => setNuevo({ ...nuevo, telefono: e.target.value })} />
-        <button type="submit">Crear proveedor</button>
+      <form onSubmit={handleCrear} className="p-3 bg-light rounded border mb-4 d-flex flex-wrap gap-2 align-items-end">
+        <input type="text" className="form-control" placeholder="Nombre" value={nuevo.nombre} onChange={e => setNuevo({ ...nuevo, nombre: e.target.value })} required style={{ maxWidth: 180 }} />
+        <input type="email" className="form-control" placeholder="Email" value={nuevo.email} onChange={e => setNuevo({ ...nuevo, email: e.target.value })} style={{ maxWidth: 200 }} />
+        <input type="text" className="form-control" placeholder="Teléfono" value={nuevo.telefono} onChange={e => setNuevo({ ...nuevo, telefono: e.target.value })} style={{ maxWidth: 140 }} />
+        <button type="submit" className="btn btn-success">Crear proveedor</button>
       </form>
 
-      <table border="1" cellPadding={8} style={{width: '100%', background: 'white', color: 'black'}}>
+      <table className="table table-bordered table-striped table-lg w-100">
         <thead>
           <tr>
             <th>ID</th>
@@ -132,12 +143,12 @@ const Proveedores = () => {
               {editando === prov.id_proveedor ? (
                 <>
                   <td>{prov.id_proveedor}</td>
-                  <td><input type="text" value={editData.nombre} onChange={e => setEditData({ ...editData, nombre: e.target.value })} /></td>
-                  <td><input type="email" value={editData.email} onChange={e => setEditData({ ...editData, email: e.target.value })} /></td>
-                  <td><input type="text" value={editData.telefono} onChange={e => setEditData({ ...editData, telefono: e.target.value })} /></td>
+                  <td><input type="text" className="form-control" value={editData.nombre} onChange={e => setEditData({ ...editData, nombre: e.target.value })} /></td>
+                  <td><input type="email" className="form-control" value={editData.email} onChange={e => setEditData({ ...editData, email: e.target.value })} /></td>
+                  <td><input type="text" className="form-control" value={editData.telefono} onChange={e => setEditData({ ...editData, telefono: e.target.value })} /></td>
                   <td>
-                    <button onClick={() => handleGuardarEdicion(prov.id_proveedor)}>Guardar</button>
-                    <button onClick={handleCancelarEdicion}>Cancelar</button>
+                    <button className="btn btn-primary btn-sm me-1" onClick={() => handleGuardarEdicion(prov.id_proveedor)}>Guardar</button>
+                    <button className="btn btn-secondary btn-sm" onClick={handleCancelarEdicion}>Cancelar</button>
                   </td>
                 </>
               ) : (
@@ -147,8 +158,8 @@ const Proveedores = () => {
                   <td>{prov.email}</td>
                   <td>{prov.telefono}</td>
                   <td>
-                    <button onClick={() => handleEditar(prov)}>Editar</button>
-                    <button onClick={() => handleEliminar(prov.id_proveedor)}>Eliminar</button>
+                    <button className="btn btn-warning btn-sm me-1" onClick={() => handleEditar(prov)}>Editar</button>
+                    <button className="btn btn-danger btn-sm" onClick={() => handleEliminar(prov.id_proveedor)}>Eliminar</button>
                   </td>
                 </>
               )}

@@ -171,8 +171,8 @@ const Ventas = () => {
   );
 
   return (
-    <div className="container mt-4">
-      <h2 className="mb-3">Gestión de Ventas</h2>
+    <div className="container-fluid mt-4 px-4">
+      <h2 className="mb-3 display-5">Gestión de Ventas</h2>
       {error && <div className="alert alert-danger">{error}</div>}
 
       <div className="row g-2 mb-3 align-items-end">
@@ -334,7 +334,7 @@ const Ventas = () => {
 
 
       {/* Tabla de ventas */}
-      <table className="table table-bordered table-striped">
+      <table className="table table-bordered table-striped table-lg w-100">
         <thead>
           <tr>
             <th>ID</th>
