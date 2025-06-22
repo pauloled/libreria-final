@@ -4,8 +4,8 @@ const db = require('../configDB/database');
 exports.getAllVentas = (req, res) => {
     const { fecha, usuario } = req.query;
     let sql = `
-        SELECT v.id_venta, v.fecha, v.total, u.nombre_usuario, v.id_usuario,
-            GROUP_CONCAT(CONCAT(p.nombre, ' (x', dv.cantidad, ')') SEPARATOR ', ') AS articulos,
+        SELECT v.id_venta, v.fecha, v.hora, v.total, u.nombre_usuario, v.id_usuario,
+            GROUP_CONCAT(DISTINCT CONCAT(p.nombre, ' (x', dv.cantidad, ')') SEPARATOR ', ') AS articulos,
             GROUP_CONCAT(dv.cantidad) AS cantidades,
             GROUP_CONCAT(dv.subtotal) AS subtotales,
             GROUP_CONCAT(CONCAT(mp.tipo, ': $', mp.monto) SEPARATOR ', ') AS metodos_pago
@@ -37,10 +37,10 @@ exports.getAllVentas = (req, res) => {
 
 // Crear venta con métodos de pago
 exports.createVenta = (req, res) => {
-    const { fecha, total, id_usuario, detalles, metodos_pago } = req.body;
+    const { fecha, hora, total, id_usuario, detalles, metodos_pago } = req.body;
     db.query(
-        'INSERT INTO venta (fecha, total, id_usuario) VALUES (?, ?, ?)',
-        [fecha, total, id_usuario],
+        'INSERT INTO venta (fecha, hora, total, id_usuario) VALUES (?, ?, ?, ?)',
+        [fecha, hora, total, id_usuario],
         (err, result) => {
             if (err) return res.status(500).json({ error: err });
             const id_venta = result.insertId;
