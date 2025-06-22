@@ -236,7 +236,9 @@ const Productos = () => {
                   <td>${prod.precio}</td>
                   <td>{prod.stock}</td>
                   <td>
-                    {prod.imagen_url && <img src={prod.imagen_url} alt={prod.nombre} width={50} />}
+                     {prod.imagen_url && (
+                     <img src={`/assets/${prod.imagen_url}`} alt={prod.nombre} width={50} />
+                   )}
                   </td>
                   <td>
                     {usuario?.rol !== 'empleado' && (
