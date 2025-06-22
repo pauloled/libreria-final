@@ -307,8 +307,8 @@ const Productos = () => {
                       )}
                     </td>
                     <td>
-                      <button onClick={() => handleGuardarEdicion(prod.id_producto)}>Guardar</button>
-                      <button onClick={handleCancelarEdicion}>Cancelar</button>
+                      <button className="btn btn-primary btn-sm me-1" onClick={() => handleGuardarEdicion(prod.id_producto)}>Guardar</button>
+                      <button className="btn btn-secondary btn-sm" onClick={handleCancelarEdicion}>Cancelar</button>
                     </td>
                   </>
                 )
