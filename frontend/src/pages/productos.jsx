@@ -112,76 +112,86 @@ const Productos = () => {
     );
 
   return (
-    <div>
-      <h2>Gestión de Productos</h2>
-      {error && <p style={{color: 'red'}}>{error}</p>}
+    <div className="container mt-4">
+      <h2 className="mb-3">Gestión de Productos</h2>
+      {error && <div className="alert alert-danger">{error}</div>}
 
       {/* Barra de búsqueda y filtros */}
-      <div style={{ display: 'flex', gap: 12, marginBottom: 16, alignItems: 'center', flexWrap: 'wrap' }}>
-        <input
-          type="text"
-          placeholder="Buscar producto por nombre..."
-          value={busqueda}
-          onChange={e => setBusqueda(e.target.value)}
-          style={{ width: 200, padding: 6 }}
-        />
-        <select value={filtroCategoria} onChange={e => setFiltroCategoria(e.target.value)}>
-          <option value="">Todas las categorías</option>
-          {categorias.map(cat => (
-            <option key={cat.id_categoria} value={cat.id_categoria}>{cat.nombre_categoria}</option>
-          ))}
-        </select>
-        <select value={filtroMarca} onChange={e => setFiltroMarca(e.target.value)}>
-          <option value="">Todas las marcas</option>
-          {marcas.map(mar => (
-            <option key={mar.id_marca} value={mar.id_marca}>{mar.nombre_marca}</option>
-          ))}
-        </select>
-        <label style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+      <div className="row g-2 mb-3 align-items-end flex-wrap">
+        <div className="col-auto">
           <input
-            type="checkbox"
-            checked={soloSinStock}
-            onChange={e => setSoloSinStock(e.target.checked)}
+            type="text"
+            className="form-control"
+            placeholder="Buscar producto por nombre..."
+            value={busqueda}
+            onChange={e => setBusqueda(e.target.value)}
+            style={{ width: 200 }}
           />
-          Solo sin stock
-        </label>
-        <button
-          onClick={() => {
+        </div>
+        <div className="col-auto">
+          <select className="form-select" value={filtroCategoria} onChange={e => setFiltroCategoria(e.target.value)}>
+            <option value="">Todas las categorías</option>
+            {categorias.map(cat => (
+              <option key={cat.id_categoria} value={cat.id_categoria}>{cat.nombre_categoria}</option>
+            ))}
+          </select>
+        </div>
+        <div className="col-auto">
+          <select className="form-select" value={filtroMarca} onChange={e => setFiltroMarca(e.target.value)}>
+            <option value="">Todas las marcas</option>
+            {marcas.map(mar => (
+              <option key={mar.id_marca} value={mar.id_marca}>{mar.nombre_marca}</option>
+            ))}
+          </select>
+        </div>
+        <div className="col-auto">
+          <label className="form-label mb-0" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <input
+              type="checkbox"
+              checked={soloSinStock}
+              onChange={e => setSoloSinStock(e.target.checked)}
+              className="form-check-input"
+            />
+            Solo sin stock
+          </label>
+        </div>
+        <div className="col-auto">
+          <button className="btn btn-secondary" onClick={() => {
             setBusqueda('');
             setFiltroCategoria('');
             setFiltroMarca('');
             setSoloSinStock(false);
-          }}
-        >
-          Limpiar filtros
-        </button>
+          }}>
+            Limpiar filtros
+          </button>
+        </div>
       </div>
 
       {/* Solo admins/encargados pueden crear productos */}
       {usuario?.rol !== 'empleado' && (
-        <form onSubmit={handleCrear} style={{marginBottom: 20, display: 'flex', gap: 8, flexWrap: 'wrap'}}>
-          <input type="text" placeholder="Nombre" value={nuevo.nombre} onChange={e => setNuevo({ ...nuevo, nombre: e.target.value })} required />
-          <input type="text" placeholder="Descripción" value={nuevo.descripcion} onChange={e => setNuevo({ ...nuevo, descripcion: e.target.value })} />
-          <input type="number" placeholder="Precio" value={nuevo.precio} onChange={e => setNuevo({ ...nuevo, precio: e.target.value })} required />
-          <input type="number" placeholder="Stock" value={nuevo.stock} onChange={e => setNuevo({ ...nuevo, stock: e.target.value })} required />
-          <select value={nuevo.id_categoria} onChange={e => setNuevo({ ...nuevo, id_categoria: e.target.value })} required>
+        <form onSubmit={handleCrear} className="p-3 bg-light rounded border mb-4 d-flex flex-wrap gap-2 align-items-end">
+          <input type="text" className="form-control" placeholder="Nombre" value={nuevo.nombre} onChange={e => setNuevo({ ...nuevo, nombre: e.target.value })} required style={{ maxWidth: 150 }} />
+          <input type="text" className="form-control" placeholder="Descripción" value={nuevo.descripcion} onChange={e => setNuevo({ ...nuevo, descripcion: e.target.value })} style={{ maxWidth: 200 }} />
+          <input type="number" className="form-control" placeholder="Precio" value={nuevo.precio} onChange={e => setNuevo({ ...nuevo, precio: e.target.value })} required style={{ maxWidth: 100 }} />
+          <input type="number" className="form-control" placeholder="Stock" value={nuevo.stock} onChange={e => setNuevo({ ...nuevo, stock: e.target.value })} required style={{ maxWidth: 80 }} />
+          <select className="form-select" value={nuevo.id_categoria} onChange={e => setNuevo({ ...nuevo, id_categoria: e.target.value })} required style={{ maxWidth: 150 }}>
             <option value="">Categoría</option>
             {categorias.map(cat => (
               <option key={cat.id_categoria} value={cat.id_categoria}>{cat.nombre_categoria}</option>
             ))}
           </select>
-          <select value={nuevo.id_marca} onChange={e => setNuevo({ ...nuevo, id_marca: e.target.value })} required>
+          <select className="form-select" value={nuevo.id_marca} onChange={e => setNuevo({ ...nuevo, id_marca: e.target.value })} required style={{ maxWidth: 150 }}>
             <option value="">Marca</option>
             {marcas.map(mar => (
               <option key={mar.id_marca} value={mar.id_marca}>{mar.nombre_marca}</option>
             ))}
           </select>
-          <input type="text" placeholder="URL Imagen" value={nuevo.imagen_url} onChange={e => setNuevo({ ...nuevo, imagen_url: e.target.value })} />
-          <button type="submit">Crear producto</button>
+          <input type="text" className="form-control" placeholder="URL Imagen" value={nuevo.imagen_url} onChange={e => setNuevo({ ...nuevo, imagen_url: e.target.value })} style={{ maxWidth: 200 }} />
+          <button type="submit" className="btn btn-success">Crear producto</button>
         </form>
       )}
 
-      <table border="1" cellPadding={8} style={{width: '100%', background: 'white', color: 'black'}}>
+      <table className="table table-bordered table-striped">
         <thead>
           <tr>
             <th>ID</th>
@@ -201,9 +211,9 @@ const Productos = () => {
                 usuario?.rol !== 'empleado' && (
                   <>
                     <td>{prod.id_producto}</td>
-                    <td><input type="text" value={editData.nombre} onChange={e => setEditData({ ...editData, nombre: e.target.value })} /></td>
+                    <td><input type="text" className="form-control" value={editData.nombre} onChange={e => setEditData({ ...editData, nombre: e.target.value })} /></td>
                     <td>
-                      <select value={editData.id_categoria} onChange={e => setEditData({ ...editData, id_categoria: e.target.value })} required>
+                      <select className="form-select" value={editData.id_categoria} onChange={e => setEditData({ ...editData, id_categoria: e.target.value })} required>
                         <option value="">Categoría</option>
                         {categorias.map(cat => (
                           <option key={cat.id_categoria} value={cat.id_categoria}>{cat.nombre_categoria}</option>
@@ -211,19 +221,19 @@ const Productos = () => {
                       </select>
                     </td>
                     <td>
-                      <select value={editData.id_marca} onChange={e => setEditData({ ...editData, id_marca: e.target.value })} required>
+                      <select className="form-select" value={editData.id_marca} onChange={e => setEditData({ ...editData, id_marca: e.target.value })} required>
                         <option value="">Marca</option>
                         {marcas.map(mar => (
                           <option key={mar.id_marca} value={mar.id_marca}>{mar.nombre_marca}</option>
                         ))}
                       </select>
                     </td>
-                    <td><input type="number" value={editData.precio} onChange={e => setEditData({ ...editData, precio: e.target.value })} /></td>
-                    <td><input type="number" value={editData.stock} onChange={e => setEditData({ ...editData, stock: e.target.value })} /></td>
-                    <td><input type="text" value={editData.imagen_url} onChange={e => setEditData({ ...editData, imagen_url: e.target.value })} /></td>
+                    <td><input type="number" className="form-control" value={editData.precio} onChange={e => setEditData({ ...editData, precio: e.target.value })} /></td>
+                    <td><input type="number" className="form-control" value={editData.stock} onChange={e => setEditData({ ...editData, stock: e.target.value })} /></td>
+                    <td><input type="text" className="form-control" value={editData.imagen_url} onChange={e => setEditData({ ...editData, imagen_url: e.target.value })} /></td>
                     <td>
-                      <button onClick={() => handleGuardarEdicion(prod.id_producto)}>Guardar</button>
-                      <button onClick={handleCancelarEdicion}>Cancelar</button>
+                      <button className="btn btn-primary btn-sm me-1" onClick={() => handleGuardarEdicion(prod.id_producto)}>Guardar</button>
+                      <button className="btn btn-secondary btn-sm" onClick={handleCancelarEdicion}>Cancelar</button>
                     </td>
                   </>
                 )
@@ -241,8 +251,8 @@ const Productos = () => {
                   <td>
                     {usuario?.rol !== 'empleado' && (
                       <>
-                        <button onClick={() => handleEditar(prod)}>Editar</button>
-                        <button onClick={() => handleEliminar(prod.id_producto)}>Eliminar</button>
+                        <button className="btn btn-warning btn-sm me-1" onClick={() => handleEditar(prod)}>Editar</button>
+                        <button className="btn btn-danger btn-sm" onClick={() => handleEliminar(prod.id_producto)}>Eliminar</button>
                       </>
                     )}
                   </td>
