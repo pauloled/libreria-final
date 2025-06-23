@@ -1,4 +1,3 @@
----
 
 # Documentación Formal - Sistema de Gestión "Librería Escolarium"
 
@@ -20,15 +19,12 @@
 
 1. Introducción
 2. Objetivos
-3. Fundamentación / Investigación [Completar]
-4. Tecnologías Utilizadas
-5. Instalación y Puesta en Marcha
-6. Estructura del Proyecto
-7. Funcionalidades del Sistema
-8. Manual de Usuario
-9. Pruebas Realizadas [Completar]
-10. Conclusiones y Mejoras Futuras [Completar]
-11. Anexos (código, diagramas, capturas, etc.) [Completar]
+3. Tecnologías Utilizadas
+4. Instalación y Puesta en Marcha
+5. Estructura del Proyecto
+6. Funcionalidades del Sistema
+7. Manual de Usuario
+8. Conclusiones y Mejoras Futuras
 
 ---
 
