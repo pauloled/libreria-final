@@ -1,4 +1,3 @@
----
 
 # Documentación Formal - Sistema de Gestión "Librería Escolarium"
 
@@ -10,9 +9,9 @@
 - **Autores:** Ledesma Paulo, Ledesma Santiago, Navarro Santiago, Quiroga Jose, Ramirez Leonardo
 - **Materia:** Programación III
 - **Año:** 2025
-- **Docente:** [Completar]
-- **Curso/Comisión:** [Completar]
-- **Fecha de entrega:** [Completar]
+- **Docente:** Matías Chocobar
+- **Curso/Comisión:** TUP - 1
+- **Fecha de entrega:** 22/06/2025
 
 ---
 
@@ -20,15 +19,12 @@
 
 1. Introducción
 2. Objetivos
-3. Fundamentación / Investigación [Completar]
-4. Tecnologías Utilizadas
-5. Instalación y Puesta en Marcha
-6. Estructura del Proyecto
-7. Funcionalidades del Sistema
-8. Manual de Usuario
-9. Pruebas Realizadas [Completar]
-10. Conclusiones y Mejoras Futuras [Completar]
-11. Anexos (código, diagramas, capturas, etc.) [Completar]
+3. Tecnologías Utilizadas
+4. Instalación y Puesta en Marcha
+5. Estructura del Proyecto
+6. Funcionalidades del Sistema
+7. Manual de Usuario
+8. Conclusiones y Mejoras Futuras
 
 ---
 
@@ -184,7 +180,8 @@ frontend/
 
 ## 8. Conclusiones y Mejoras Futuras
 
-El sistema está creado especificamente para una librería con un local mediano, con una sola caja y una frecuencia de clientes moderada. Fue pensado para todas sus necesidades ya que solamente usaban excel, y al ampliar el local necesitaban un sistema barato y con un diseño amigable. Cumplimos todas sus necesidades con futuras mejoras como:  - Apartado de recaudación diaria, semanal y mensual.
+El sistema está creado especificamente para una librería con un local mediano, con una sola caja y una frecuencia de clientes moderada. Fue pensado para todas sus necesidades ya que solamente usaban excel, y al ampliar el local necesitaban un sistema barato y con un diseño amigable. Cumplimos todas sus necesidades con futuras mejoras como:  
+- Apartado de recaudación diaria, semanal y mensual.
 - Reportes de ganancias.
 - Historial de cambios.
 - Accesos desde distintas computadoras.
