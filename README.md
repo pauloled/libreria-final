@@ -47,13 +47,7 @@ El presente documento describe el desarrollo e implementación de un sistema web
 
 ---
 
-## 3. Fundamentación / Investigación
-
-*[Completar: aquí puedes explicar por qué elegiste estas tecnologías, qué problemas resuelve el sistema, referencias a sistemas similares, etc.]*
-
----
-
-## 4. Tecnologías Utilizadas
+## 3. Tecnologías Utilizadas
 
 - **Frontend:**
   - React JS (con Vite)
@@ -70,16 +64,16 @@ El presente documento describe el desarrollo e implementación de un sistema web
 
 ---
 
-## 5. Instalación y Puesta en Marcha
+## 4. Instalación y Puesta en Marcha
 
-### 5.1. Requisitos
+### 4.1. Requisitos
 
 - Visual Studio Code (u otro editor)
 - MySQL
 - XAMPP (opcional, depende la instalacion de MySQL)
 - Navegador web (Chrome, Firefox, Edge)
 
-### 5.2. Pasos
+### 4.2. Pasos
 
 1. **Clonar el repositorio**
     ```bash
@@ -104,9 +98,11 @@ El presente documento describe el desarrollo e implementación de un sistema web
       - Empleado: usuario: `empleado1` / contraseña: `123`
       - Encargado: usuario: `encargado1` / contraseña: `123`
 
+**Dentro del repositorio se encuenta el archivo 'guia_usuario.pdf' que tiene información detallada e imágenes de la instalación del sistema**
+
 ---
 
-## 6. Estructura del Proyecto
+## 5. Estructura del Proyecto
 
 ```
 backend/
@@ -131,7 +127,7 @@ frontend/
 
 ---
 
-## 7. Funcionalidades del Sistema
+## 6. Funcionalidades del Sistema
 
 | Módulo         | Funciones disponibles                                                                |
 |----------------|--------------------------------------------------------------------------------------|
@@ -146,66 +142,52 @@ frontend/
 
 ---
 
-## 8. Manual de Usuario
+## 7. Manual de Usuario
 
-### 8.1. Inicio de sesión
+### 7.1. Inicio de sesión
 
 - Acceder con usuario y contraseña.
 - El sistema muestra diferentes paneles según el rol.
 
-### 8.2. Gestión de productos
+### 7.2. Gestión de productos
 
 - Visualizar, buscar y filtrar productos.
 - Crear, editar y eliminar productos (según permisos).
 
-### 8.3. Ventas
+### 7.3. Ventas
 
 - Registrar una nueva venta, seleccionando productos y métodos de pago.
 - Ver listado de ventas, filtrar por fecha, usuario y método de pago.
 - Eliminar ventas (según permisos).
 
-### 8.4. Usuarios
+### 7.4. Usuarios
 
 - Listar usuarios. (solo admin)
 - Crear, editar, eliminar y asignar roles (solo admin).
 
-### 8.5. Asistencias
+### 7.5. Asistencias
 
 - Registrar ingreso y salida.
 - Corregir asistencias (admin/encargado).
 - Filtrar por usuario y fecha. (empleado solo fecha)
 
-### 8.6. Ingresos de stock
+### 7.6. Ingresos de stock
 
 - Registrar ingresos de productos al stock. (admin/encargado)
 - Editar y eliminar ingresos (admin/encargado).
 
-### 8.7. Proveedores
+### 7.7. Proveedores
 
 - Registrar, editar y eliminar proveedores (admin/encargado).
 
-*[Puedes agregar capturas de pantalla de cada módulo aquí]*
-
 ---
 
-## 9. Pruebas Realizadas
+## 8. Conclusiones y Mejoras Futuras
 
-*[Completar: Detalla pruebas funcionales, de usuario, casos de prueba, etc. Puedes incluir capturas de pantalla.]*
-
----
-
-## 10. Conclusiones y Mejoras Futuras
-
-*[Completar: Reflexiona sobre el desarrollo, dificultades, logros y posibles mejoras o ampliaciones.]*
-
----
-
-## 11. Anexos
-
-- Código fuente relevante.
-- Diagramas de base de datos, de flujo, de arquitectura.
-- Capturas de pantalla adicionales.
-- Manual técnico para desarrolladores (opcional).
+El sistema está creado especificamente para una librería con un local mediano, con una sola caja y una frecuencia de clientes moderada. Fue pensado para todas sus necesidades ya que solamente usaban excel, y al ampliar el local necesitaban un sistema barato y con un diseño amigable. Cumplimos todas sus necesidades con futuras mejoras como:  - Apartado de recaudación diaria, semanal y mensual.
+- Reportes de ganancias.
+- Historial de cambios.
+- Accesos desde distintas computadoras.
 
 ---
 
