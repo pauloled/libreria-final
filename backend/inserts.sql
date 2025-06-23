@@ -23,6 +23,7 @@ INSERT INTO categoria (nombre_categoria) VALUES
 ('Pinceles'),
 ('Tijeras'),
 ('Artistico'),
+('Mochilas'),
 ('Accesorios');
 
 -- Insertar marcas
@@ -33,23 +34,25 @@ INSERT INTO marca (nombre_marca) VALUES
 ('Maped'),
 ('Pilot'),
 ('Staedtler'),
-('Pritt'),
+('Jansport'),
 ('Rivadavia'),
 ('Ledesma'),
-('Patito');
+('Patito'),
+('Pritt'),
+('Pizzini');
 
 -- Insertar productos
 INSERT INTO producto (nombre, descripcion, precio, stock, id_categoria, id_marca, imagen_url) VALUES
-('Cuaderno Rivadavia', 'Cuaderno de 48 hojas', 350.00, 100, 1, 8, ''),
-('Lapicera BIC azul', 'Lapicera tinta azul', 120.00, 200, 2, 3, ''),
-('Marcador permanente negro', 'Marcador indeleble', 220.00, 150, 3, 2, ''),
-('Resma A4', '500 hojas A4', 1800.00, 50, 9, 9, ''),
-('Cartuchera triple cierre', 'Cartuchera con 3 compartimientos', 2500.00, 40, 5, 4, ''),
-('Pegamento en barra', 'Pritt 20g', 550.00, 80, 6, 7, ''),
-('Pincel N°6', 'Pincel pelo suave', 450.00, 70, 7, 1, ''),
+('Cuaderno Rivadavia', 'Cuaderno de 48 hojas', 350.00, 100, 1, 8, 'cuaderno.jpg'),
+('Lapicera BIC azul', 'Lapicera tinta azul', 120.00, 200, 2, 3, 'lapicera2.jpg'),
+('Marcador permanente negro', 'Marcador indeleble', 220.00, 150, 3, 2, 'marcadoralagua.jpg'),
+('Mochila Jansport', 'Mochila chica unisex', 1800.00, 50, 10, 7, 'mochila5.jpg'),
+('Cartuchera triple cierre', 'Cartuchera con 3 compartimientos', 2500.00, 40, 5, 4, 'cartuchera3.jpg'),
+('Pegamento en barra', 'Pritt 20g', 550.00, 80, 6, 11, 'pegamentoenbarra.jpg'),
+('Pincel N°6', 'Pincel pelo suave', 450.00, 70, 7, 1, 'pingelgoya.jpg'),
 ('Tijera escolar', 'Tijera para niños', 650.00, 90, 8, 4, 'Tijera.jpg'),
-('Resaltador amarillo', 'Resaltador fluorescente', 380.00, 110, 3, 5, ''),
-('Lapicera Pilot G2', 'Lapicera gel', 600.00, 75, 2, 5, '');
+('Resaltador Pizarra negro', 'Resaltador al agua para pizarrón', 380.00, 110, 3, 12, 'marcadorpizarra.jpg'),
+('Lapicera Pilot G2', 'Lapicera gel', 600.00, 75, 2, 5, 'lapicera2.jpg');
 
 -- Insertar proveedores
 INSERT INTO proveedor (nombre, email, telefono) VALUES
