@@ -180,7 +180,8 @@ frontend/
 
 ## 8. Conclusiones y Mejoras Futuras
 
-El sistema está creado especificamente para una librería con un local mediano, con una sola caja y una frecuencia de clientes moderada. Fue pensado para todas sus necesidades ya que solamente usaban excel, y al ampliar el local necesitaban un sistema barato y con un diseño amigable. Cumplimos todas sus necesidades con futuras mejoras como:  - Apartado de recaudación diaria, semanal y mensual.
+El sistema está creado especificamente para una librería con un local mediano, con una sola caja y una frecuencia de clientes moderada. Fue pensado para todas sus necesidades ya que solamente usaban excel, y al ampliar el local necesitaban un sistema barato y con un diseño amigable. Cumplimos todas sus necesidades con futuras mejoras como:  
+- Apartado de recaudación diaria, semanal y mensual.
 - Reportes de ganancias.
 - Historial de cambios.
 - Accesos desde distintas computadoras.
