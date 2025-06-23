@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { USUARIOS } from '../enpoints/endpoints';
-import { useNavigate } from 'react-router-dom';
 
 const UsuariosContainer = () => {
   const [usuarios, setUsuarios] = useState([]);
@@ -17,7 +16,6 @@ const UsuariosContainer = () => {
   const [filtroNombre, setFiltroNombre] = useState('');
   const [filtroCorreo, setFiltroCorreo] = useState('');
   const [filtroRol, setFiltroRol] = useState('');
-  const navigate = useNavigate();
 
   const cargarUsuarios = () => {
     axios.get(USUARIOS)
@@ -79,16 +77,6 @@ const UsuariosContainer = () => {
   const handleCancelarEdicion = () => {
     setEditando(null);
     setEditData({});
-  };
-
-  // Ir a ventas de usuario
-  const verVentas = (id_usuario) => {
-    navigate(`/ventas?usuario=${id_usuario}`);
-  };
-
-  // Ir a asistencias de usuario
-  const verAsistencias = (id_usuario) => {
-    navigate(`/asistencias?usuario=${id_usuario}`);
   };
 
   // Limpiar filtros
@@ -202,8 +190,6 @@ const UsuariosContainer = () => {
                     <td>••••••</td>
                     <td>{user.rol}</td>
                     <td>
-                      <button className="btn btn-info btn-sm me-1" onClick={() => verVentas(user.id_usuario)}>Ventas</button>
-                      <button className="btn btn-secondary btn-sm me-1" onClick={() => verAsistencias(user.id_usuario)}>Asistencias</button>
                       <button className="btn btn-warning btn-sm me-1" onClick={() => handleEditar(user)}>Editar</button>
                       <button className="btn btn-danger btn-sm" onClick={() => handleEliminar(user.id_usuario)}>Eliminar</button>
                     </td>
@@ -217,5 +203,4 @@ const UsuariosContainer = () => {
     </div>
   );
 };
-
 export default UsuariosContainer;

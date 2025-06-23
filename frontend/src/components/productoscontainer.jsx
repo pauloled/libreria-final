@@ -352,11 +352,12 @@ const ProductosContainer = () => {
                     <td style={{ verticalAlign: 'middle', textAlign: 'center' }}>
                       {prod.imagen_url && (
                         <img
-                          src={prod.imagen_url}
+                          src={`/assets/${prod.imagen_url}`}
                           alt={prod.nombre}
                           width={38}
                           height={38}
                           style={{ borderRadius: 6, objectFit: 'cover', border: '1px solid #eee', background: '#fafafa' }}
+                          onError={e => { e.target.onerror = null; e.target.src = '/vite.svg'; }}
                         />
                       )}
                     </td>

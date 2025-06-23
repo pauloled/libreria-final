@@ -47,7 +47,7 @@ INSERT INTO producto (nombre, descripcion, precio, stock, id_categoria, id_marca
 ('Cartuchera triple cierre', 'Cartuchera con 3 compartimientos', 2500.00, 40, 5, 4, ''),
 ('Pegamento en barra', 'Pritt 20g', 550.00, 80, 6, 7, ''),
 ('Pincel N°6', 'Pincel pelo suave', 450.00, 70, 7, 1, ''),
-('Tijera escolar', 'Tijera para niños', 650.00, 90, 8, 4, ''),
+('Tijera escolar', 'Tijera para niños', 650.00, 90, 8, 4, 'Tijera.jpg'),
 ('Resaltador amarillo', 'Resaltador fluorescente', 380.00, 110, 3, 5, ''),
 ('Lapicera Pilot G2', 'Lapicera gel', 600.00, 75, 2, 5, '');
 
