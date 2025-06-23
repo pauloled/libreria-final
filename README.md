@@ -9,9 +9,9 @@
 - **Autores:** Ledesma Paulo, Ledesma Santiago, Navarro Santiago, Quiroga Jose, Ramirez Leonardo
 - **Materia:** Programación III
 - **Año:** 2025
-- **Docente:** [Completar]
-- **Curso/Comisión:** [Completar]
-- **Fecha de entrega:** [Completar]
+- **Docente:** Matías Chocobar
+- **Curso/Comisión:** TUP - 1
+- **Fecha de entrega:** 22/06/2025
 
 ---
 
