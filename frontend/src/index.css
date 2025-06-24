@@ -66,3 +66,30 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+input[type="date"], input[type="time"] {
+  color-scheme: dark light;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.5);
+  cursor: pointer;
+}
+
+/* Tablas amigables: filas alternadas y bordes */
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: #f8f9fa; /* Gris claro */
+}
+.table-striped tbody tr:nth-of-type(even) {
+  background-color: #fff; /* Blanco */
+}
+.table-bordered th,
+.table-bordered td {
+  border: 1px solid #b0b0b0 !important; /* Gris oscuro */
+}
+.table thead th {
+  background-color: #f3f0fa !important;
+  color: #222;
+  border-bottom: 2px solid #b0b0b0 !important;
+}
